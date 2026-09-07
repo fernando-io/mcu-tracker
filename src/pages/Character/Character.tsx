@@ -24,6 +24,7 @@ export function CharacterPage() {
     );
   }
 
+  const status = currentStatus(character, knowledgeLevel);
   const firstSeen = productions.find(movie => movie.n === character.firstSeen);
   const appearances = unlockedAppearances(character, knowledgeLevel)
     .map(number => productions.find(movie => movie.n === number))
@@ -31,40 +32,61 @@ export function CharacterPage() {
   const relationships = connections.filter(connection =>
     connection[2] <= knowledgeLevel && (connection[0] === character.name || connection[1] === character.name)
   );
+  const appearancesLabel = `${appearances.length} ${appearances.length === 1 ? "aparição conhecida" : "aparições conhecidas"}`;
 
   return (
-    <main className="wrap character-page">
-      <Link className="back-link" to="/?tab=arquivo">Voltar para Database</Link>
-      <section className="card character-profile">
-        <CharacterPortrait character={character} knowledgeLevel={knowledgeLevel} />
-        <div className="character-profile-copy">
-          <div className="eyebrow">S.H.I.E.L.D. file</div>
+    <main className="wrap character-page dossier-page">
+      <Link className="back-link dossier-back" to="/?tab=arquivo">Voltar para Database</Link>
+
+      <section className="card character-profile dossier-hero">
+        <div className="dossier-portrait-frame">
+          <CharacterPortrait character={character} knowledgeLevel={knowledgeLevel} />
+        </div>
+        <div className="character-profile-copy dossier-identity">
+          <div className="dossier-classification">
+            <span>Dossiê S.H.I.E.L.D.</span>
+            <b>clearance level {knowledgeLevel}</b>
+          </div>
           <h1>{character.name}</h1>
-          <p>{currentStatus(character, knowledgeLevel)}</p>
-          <dl className="character-detail-meta">
-            <div><dt>Primeira aparição conhecida</dt><dd>{firstSeen?.t || "CLASSIFIED"}</dd></div>
-            <div><dt>Aparições já vistas</dt><dd>{appearances.length}</dd></div>
+          <div className="dossier-status-block">
+            <span>Status conhecido</span>
+            <p>{status}</p>
+          </div>
+          <dl className="character-detail-meta dossier-meta-grid">
+            <div><dt>Primeira aparição</dt><dd>{firstSeen?.t || "CLASSIFIED"}</dd></div>
+            <div><dt>Histórico confirmado</dt><dd>{appearancesLabel}</dd></div>
           </dl>
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-head"><div className="section-title"><h2>Descrição conhecida</h2><p>Último status desbloqueado pelo seu progresso.</p></div></div>
-        <div className="where"><p>{currentStatus(character, knowledgeLevel)}</p></div>
+      <section className="section dossier-section">
+        <div className="section-head"><div className="section-title"><h2>Relatório de inteligência</h2><p>Último registro conhecido desbloqueado pelo seu progresso.</p></div></div>
+        <article className="intelligence-report">
+          <div className="report-stamp">Inteligência verificada</div>
+          <p>{status}</p>
+        </article>
       </section>
 
-      <section className="section">
-        <div className="section-head"><div className="section-title"><h2>Aparições</h2><p>Somente produções já liberadas pela sua maratona.</p></div></div>
-        <div className="where-list">
-          {appearances.map(movie => movie ? <div key={movie.n} className="where"><h4>{movie.t}</h4><p>{movie.type}</p></div> : null)}
+      <section className="section dossier-section">
+        <div className="section-head"><div className="section-title"><h2>Histórico conhecido</h2><p>Produções confirmadas dentro da sua maratona.</p></div></div>
+        <div className="dossier-record-list">
+          {appearances.map(movie => movie ? (
+            <div key={movie.n} className="dossier-record history-record">
+              <span>{String(movie.n).padStart(2, "0")}</span>
+              <div><h4>{movie.t}</h4><p>{movie.type}</p></div>
+            </div>
+          ) : null)}
         </div>
       </section>
 
-      <section className="section">
+      <section className="section dossier-section">
         <div className="section-head"><div className="section-title"><h2>Relacionamentos</h2><p>Conexões já reveladas.</p></div></div>
-        <div className="where-list">
+        <div className="dossier-record-list relationships-list">
           {relationships.length ? relationships.map(([a, b, at, relation], index) => (
-            <div key={`${a}-${b}-${at}-${index}`} className="where"><h4>{a === character.name ? b : a}</h4><p>{relation}</p></div>
+            <div key={`${a}-${b}-${at}-${index}`} className="dossier-record relationship-record intel-link">
+              <span>INT</span>
+              <div><h4>{a === character.name ? b : a}</h4><p>{relation}</p></div>
+            </div>
           )) : <div className="empty">Nenhum relacionamento desbloqueado.</div>}
         </div>
       </section>

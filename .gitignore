@@ -9,6 +9,9 @@ dist
 .env.local
 .env.*.local
 
+# AI workspace
+AGENTS.md
+
 # logs
 npm-debug.log*
 yarn-debug.log*
@@ -21,6 +24,7 @@ pnpm-debug.log*
 
 # macOS
 .DS_Store
+
 # TypeScript build info
 *.tsbuildinfo
 

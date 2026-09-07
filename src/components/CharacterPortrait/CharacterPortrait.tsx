@@ -13,7 +13,7 @@ export function CharacterPortrait({ character, knowledgeLevel }: CharacterPortra
     return (
       <div className="character-portrait asset-pending">
         <span>CLASSIFIED</span>
-        <b>Portrait unavailable</b>
+        <b>Retrato indisponível</b>
       </div>
     );
   }
