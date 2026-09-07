@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#b11313" />
+  <title>MCU Essencial — S.H.I.E.L.D. Archive</title>
+  <style>
+    :root{
+      --bg:#070707;--panel:#111;--panel2:#171717;--text:#f4f4f4;--muted:#9f9f9f;
+      --line:#2b2b2b;--red:#e62429;--red2:#9f1014;--gold:#d5a94b;--green:#39c77b;
+      --blue:#5ca8ff;--violet:#9d7dff;--shadow:0 16px 40px rgba(0,0,0,.38)
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 85% -10%,rgba(230,36,41,.16),transparent 28rem),
+        radial-gradient(circle at 0% 30%,rgba(92,168,255,.06),transparent 24rem),
+        linear-gradient(180deg,#050505,#0a0a0a 42%,#070707);
+    }
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .wrap{width:min(1200px,calc(100% - 28px));margin:0 auto}
+    header{position:sticky;top:0;z-index:50;background:rgba(7,7,7,.86);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .topbar{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:13px;min-width:0}
+    .brandmark{background:var(--red);border:2px solid #fff;padding:5px 11px 4px;font-size:20px;font-weight:1000;letter-spacing:-1.4px;transform:skew(-4deg);line-height:1}
+    .brandcopy strong{display:block;font-size:14px;letter-spacing:.14em;text-transform:uppercase}
+    .brandcopy span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+    .header-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn,.tab,.filter{border:1px solid var(--line);background:#151515;color:#eee;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:800}
+    .btn:hover,.tab:hover,.filter:hover{border-color:#444}
+    .btn.red{background:var(--red2);border-color:var(--red2)}
+    .hero{padding:38px 0 18px}
+    .hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018));border:1px solid rgba(255,255,255,.08);border-radius:18px;box-shadow:var(--shadow)}
+    .hero-card{padding:26px;position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;right:-70px;top:-100px;width:250px;height:250px;border-radius:50%;background:radial-gradient(circle,rgba(230,36,41,.32),transparent 66%)}
+    .eyebrow{font-size:11px;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:#ff6d71}
+    h1{font-size:clamp(34px,5vw,58px);line-height:.98;letter-spacing:-.05em;margin:10px 0 14px}
+    .hero p{margin:0;color:#c7c7c7;line-height:1.6;max-width:760px}
+    .stats-card{padding:22px;display:flex;flex-direction:column;justify-content:center}
+    .progress-row{display:flex;justify-content:space-between;align-items:flex-end;gap:18px}
+    .big{font-size:42px;font-weight:1000;letter-spacing:-.05em}
+    .small{color:var(--muted);font-size:12px}
+    .bar{height:10px;background:#272727;border-radius:999px;overflow:hidden;margin-top:13px}
+    .bar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red2),var(--red));transition:width .25s}
+    .stats-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+    .mini{background:#0f0f0f;border:1px solid var(--line);border-radius:12px;padding:9px;text-align:center}
+    .mini b{display:block;font-size:18px}.mini span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+    .navtabs{display:flex;gap:8px;flex-wrap:wrap;padding:16px 0 6px}
+    .tab.active{background:#eee;color:#101010;border-color:#eee}
+    .panel{display:none}.panel.active{display:block}
+    .toolbar{padding:12px 0 22px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .filter{border-radius:999px}
+    .filter.active{background:#eee;color:#111;border-color:#eee}
+    .search{margin-left:auto;min-width:250px;max-width:380px;flex:1;background:#111;border:1px solid var(--line);color:#fff;border-radius:11px;padding:11px 13px;outline:none}
+    .search:focus{border-color:#666}
+    .section{margin:10px 0 34px}
+    .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:12px}
+    .section-title h2{font-size:22px;margin:0}.section-title p{color:var(--muted);font-size:12px;margin:4px 0 0}.count{color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+    .item{background:linear-gradient(180deg,#151515,#101010);border:1px solid var(--line);border-radius:15px;padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;min-width:0}
+    .item.watched{border-color:rgba(57,199,123,.34);background:linear-gradient(180deg,rgba(57,199,123,.06),#101010)}
+    .num{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#252525;border:1px solid #343434;font-weight:950;font-size:12px}
+    .title-line{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.title-line h3{font-size:15px;line-height:1.35;margin:0}
+    .badge{font-size:9px;font-weight:950;text-transform:uppercase;letter-spacing:.06em;padding:4px 7px;border-radius:999px;border:1px solid currentColor}.essential{color:#ff666b}.recommended{color:#e1b657}.future{color:#6aaeff}
+    .type{font-size:11px;color:#999;margin-top:5px}.future-note{font-size:11px;color:#82b8f3;margin-top:6px}
+    .check{appearance:none;width:24px;height:24px;border-radius:7px;border:2px solid #595959;background:#0c0c0c;display:grid;place-content:center;margin-top:4px}.check:checked{background:var(--green);border-color:var(--green)}.check:checked:after{content:"✓";font-weight:1000;color:#04150b}
+    .summary{grid-column:2 / 4;display:none;border-top:1px solid var(--line);padding-top:11px;color:#d0d0d0;font-size:13px;line-height:1.55}.item.watched .summary{display:block}.summary b{color:#fff}
+    .reaction{display:grid;grid-template-columns:auto 1fr;gap:8px;margin-top:10px}.rating{display:flex;gap:4px;align-items:start}.star{width:28px;height:28px;border:1px solid #393939;border-radius:8px;background:#101010;color:#777;padding:0}.star.on{color:#ffd064;border-color:#6c5726}.note{width:100%;resize:vertical;min-height:56px;background:#0d0d0d;border:1px solid #343434;border-radius:9px;color:#eee;padding:9px;outline:none}.note:focus{border-color:#666}
+    .knowledge-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 0 30px}
+    .knowledge-card{padding:18px}.knowledge-card h3{margin:0 0 6px;font-size:18px}.knowledge-card>p{margin:0 0 14px;color:var(--muted);font-size:12px;line-height:1.5}
+    .chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:8px 10px;border-radius:999px;border:1px solid #333;background:#101010;font-size:12px}.chip small{color:#888}
+    .db-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.db-card{border:1px solid var(--line);background:#111;border-radius:14px;padding:14px;min-width:0}.db-card.locked{filter:saturate(.6);opacity:.68}.db-card h4{margin:0 0 5px;font-size:14px}.db-card p{margin:0;color:#aaa;font-size:12px;line-height:1.45}.classified{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#7d7d7d;letter-spacing:.09em}
+    .mystery{border:1px solid var(--line);background:#111;border-radius:13px;padding:13px;margin-bottom:9px}.mystery.resolved{border-color:rgba(57,199,123,.3)}.mystery .state{font-size:10px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;color:#e2b853}.mystery.resolved .state{color:#5dd896}.mystery h4{margin:5px 0 4px;font-size:14px}.mystery p{margin:0;color:#aaa;font-size:12px;line-height:1.45}
+    .connections-wrap{padding:18px}.network{width:100%;height:auto;min-height:460px;background:#0d0d0d;border:1px solid var(--line);border-radius:14px;overflow:hidden}.legend{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 0}.legend span{font-size:11px;color:#aaa}
+    .node-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.node-pill{border:1px solid #333;background:#101010;border-radius:10px;padding:9px 10px;font-size:12px}
+    .where-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.where{border:1px solid var(--line);background:#111;border-radius:13px;padding:13px}.where h4{margin:0 0 5px;font-size:14px}.where p{margin:0;color:#aaa;font-size:12px;line-height:1.45}
+    .achievement-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.achievement{padding:14px;border:1px solid var(--line);background:#111;border-radius:14px}.achievement.locked{opacity:.48}.achievement .icon{font-size:22px}.achievement h4{margin:7px 0 4px}.achievement p{margin:0;color:#999;font-size:12px}
+    .ranking{padding:18px}.rank-row{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #242424}.rank-row:last-child{border-bottom:0}.rank-pos{font-weight:1000;color:#777}.rank-title{font-size:13px}.rank-score{font-weight:950;color:#ffd064}
+    .empty{padding:28px;border:1px dashed #383838;border-radius:14px;text-align:center;color:#8c8c8c}
+    .credit{padding:10px 0 40px;color:#707070;font-size:11px;line-height:1.6}
+    @media(max-width:900px){.hero-grid,.knowledge-layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.db-grid,.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.where-list{grid-template-columns:1fr}}
+    @media(max-width:560px){.wrap{width:min(100% - 18px,1200px)}.topbar{align-items:flex-start;padding:12px 0}.brandcopy span{display:none}.header-actions .btn:not(.red){display:none}.hero{padding-top:25px}.hero-card,.stats-card{padding:18px}.stats-mini{grid-template-columns:repeat(2,1fr)}.search{order:-1;min-width:100%;max-width:none;margin-left:0}.summary{grid-column:1 / 4}.reaction{grid-template-columns:1fr}.db-grid,.achievement-grid,.node-list{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap topbar">
+    <div class="brand">
+      <div class="brandmark">MCU</div>
+      <div class="brandcopy">
+        <strong>S.H.I.E.L.D. Archive</strong>
+        <span>Seu universo só sabe o que você já assistiu</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn" id="exportBtn">Exportar progresso</button>
+      <button class="btn red" id="resetBtn">Resetar</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="card hero-card">
+        <div class="eyebrow">Spoiler-zero protocol</div>
+        <h1>Seu arquivo Marvel<br>cresce com você.</h1>
+        <p>Marque cada produção ao terminar. Resumos, personagens, conexões e status do universo só desbloqueiam quando a informação já foi revelada na sua maratona.</p>
+      </div>
+      <div class="card stats-card">
+        <div class="progress-row">
+          <div><div class="big" id="pct">0%</div><div class="small" id="progressText">0 assistidos</div></div>
+          <div class="small">Nível de conhecimento<br><b id="knowledgeLevel">0</b></div>
+        </div>
+        <div class="bar"><span id="barFill"></span></div>
+        <div class="stats-mini">
+          <div class="mini"><b id="watchedCount">0</b><span>Assistidos</span></div>
+          <div class="mini"><b id="essentialLeft">0</b><span>Essenciais faltando</span></div>
+          <div class="mini"><b id="ratedCount">0</b><span>Avaliados</span></div>
+          <div class="mini"><b id="futureCount">0</b><span>Futuros</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="navtabs" aria-label="Seções">
+    <button class="tab active" data-panel="maratona">Maratona</button>
+    <button class="tab" data-panel="arquivo">S.H.I.E.L.D. Database</button>
+    <button class="tab" data-panel="conexoes">Conexões</button>
+    <button class="tab" data-panel="status">Onde estamos?</button>
+    <button class="tab" data-panel="conquistas">Conquistas</button>
+    <button class="tab" data-panel="ranking">Meu ranking</button>
+  </nav>
+
+  <section class="panel active" id="panel-maratona">
+    <div class="toolbar">
+      <button class="filter active" data-filter="all">Todos</button>
+      <button class="filter" data-filter="essential">🔴 Essenciais</button>
+      <button class="filter" data-filter="recommended">🟡 Recomendados</button>
+      <button class="filter" data-filter="unwatched">Não assistidos</button>
+      <button class="filter" data-filter="watched">Assistidos</button>
+      <input class="search" id="search" placeholder="Buscar filme ou série..." />
+    </div>
+    <div id="sections"></div>
+  </section>
+
+  <section class="panel" id="panel-arquivo">
+    <div class="knowledge-layout">
+      <div class="card knowledge-card">
+        <h3>O que eu sei até aqui</h3>
+        <p>Conceitos e lugares desbloqueados apenas até seu nível atual de conhecimento.</p>
+        <div class="chips" id="knowledgeChips"></div>
+      </div>
+      <div class="card knowledge-card">
+        <h3>Protocolo CLASSIFIED</h3>
+        <p>Entradas futuras continuam ocultas até a produção correspondente ser assistida.</p>
+        <div id="classifiedPreview"></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><div class="section-title"><h2>Arquivo de personagens</h2><p>Status conhecido neste exato ponto da maratona.</p></div></div>
+      <div class="db-grid" id="characterGrid"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-conexoes">
+    <div class="card connections-wrap">
+      <div class="section-head"><div class="section-title"><h2>Mapa de conexões</h2><p>A rede só mostra relações já reveladas.</p></div><div class="count" id="connectionCount"></div></div>
+      <svg class="network" id="network" viewBox="0 0 1000 520" role="img" aria-label="Mapa de conexões do MCU"></svg>
+      <div class="legend"><span>● Heróis</span><span>● Organizações</span><span>● Vilões / ameaças</span></div>
+      <div class="node-list" id="nodeList"></div>
+    </div>
+  </section>
+<section class="panel" id="panel-status">
+    <div class="section">
+      <div class="section-head"><div class="section-title"><h2>Onde estamos?</h2><p>Estado atual conhecido do universo, sem olhar para o futuro.</p></div></div>
+      <div class="where-list" id="whereList"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-conquistas">
+    <div class="section">
+      <div class="section-head"><div class="section-title"><h2>Conquistas</h2><p>Marcos da sua maratona.</p></div></div>
+      <div class="achievement-grid" id="achievementGrid"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="panel-ranking">
+    <div class="card ranking">
+      <div class="section-head"><div class="section-title"><h2>Meu ranking do MCU</h2><p>Ordenado pelas suas próprias notas.</p></div><div class="count" id="rankingCount"></div></div>
+      <div id="rankingList"></div>
+    </div>
+  </section>
+
+  <div class="credit">Projeto pessoal de maratona. Regra estrutural: nenhum conteúdo com <code>revealedAt</code> acima do seu nível de conhecimento é renderizado.</div>
+</main>
+
+<script>
+const productions = [
+  {s:"Saga do Infinito",n:1,t:"Capitão América: O Primeiro Vingador",p:"essential",type:"Filme",sum:"Steve Rogers se torna o Capitão América durante a Segunda Guerra Mundial. A HYDRA, liderada pelo Caveira Vermelha, usa o Tesseract como fonte de energia para armas. Bucky cai de um trem durante uma missão e é dado como morto. Steve impede o ataque da HYDRA, cai com o avião no Ártico e desperta quase 70 anos depois, no mundo moderno, onde encontra Nick Fury."},
+  {s:"Saga do Infinito",n:2,t:"Capitã Marvel",p:"recommended",type:"Filme",sum:"Carol Danvers descobre que nasceu na Terra e que os Kree apagaram parte de suas memórias e controlavam sua vida. Ela recupera suas lembranças e seus poderes, ajuda os Skrulls perseguidos e deixa a Terra para ajudá-los. Nick Fury começa a desenvolver a ideia de reunir pessoas extraordinárias quando necessário."},
+  {s:"Saga do Infinito",n:3,t:"Homem de Ferro",p:"essential",type:"Filme",sum:"Tony Stark é sequestrado e constrói uma armadura para escapar. Depois de descobrir as consequências das armas fabricadas por sua empresa, decide encerrar essa atividade e aperfeiçoa a tecnologia do Homem de Ferro. Obadiah Stane tenta tomar o controle da Stark Industries e é derrotado. No final, Tony revela publicamente: ele é o Homem de Ferro."},
+  {s:"Saga do Infinito",n:4,t:"Homem de Ferro 2",p:"recommended",type:"Filme",sum:"Tony enfrenta problemas causados pelo reator em seu peito enquanto Ivan Vanko busca vingança contra a família Stark. Natasha Romanoff é revelada como agente da S.H.I.E.L.D. James Rhodes passa a usar uma armadura própria. Tony cria um novo elemento para estabilizar seu reator e derrota Vanko."},
+  {s:"Saga do Infinito",n:5,t:"Thor",p:"recommended",type:"Filme",sum:"Thor é banido de Asgard por Odin e enviado à Terra sem seus poderes. Loki descobre sua verdadeira origem e assume temporariamente o trono. Thor aprende humildade, recupera Mjölnir e seus poderes e impede o plano de Loki. A ponte Bifrost é destruída, separando Thor de Jane Foster."},
+  {s:"Saga do Infinito",n:6,t:"Os Vingadores",p:"essential",type:"Filme",sum:"Loki chega à Terra, toma o Tesseract e controla Clint Barton e outros agentes. Nick Fury reúne Tony Stark, Steve Rogers, Thor, Bruce Banner, Natasha Romanoff e Clint Barton. Após a morte de Coulson, o grupo se une e derrota a invasão alienígena em Nova York. Loki é levado de volta a Asgard e o Tesseract vai com Thor."},
+  {s:"Saga do Infinito",n:7,t:"Homem de Ferro 3",p:"recommended",type:"Filme",sum:"Após a Batalha de Nova York, Tony sofre ataques de ansiedade e passa a construir armaduras compulsivamente. Ele enfrenta Aldrich Killian e o projeto Extremis. Tony destrói grande parte de suas armaduras, remove os estilhaços próximos ao coração e reafirma que sua identidade como Homem de Ferro não depende apenas da armadura."},
+  {s:"Saga do Infinito",n:8,t:"Capitão América: O Soldado Invernal",p:"essential",type:"Filme",sum:"Steve trabalha para a S.H.I.E.L.D. ao lado de Natasha, mas descobre que a HYDRA estava infiltrada na organização havia décadas. Nick Fury sobrevive a uma tentativa de assassinato. O misterioso Soldado Invernal é revelado como Bucky Barnes, vivo e submetido a lavagem cerebral. Steve, Natasha, Sam Wilson e aliados derrubam o projeto da HYDRA e a S.H.I.E.L.D. entra em colapso."},
+  {s:"Saga do Infinito",n:9,t:"Guardiões da Galáxia",p:"essential",type:"Filme",sum:"Peter Quill rouba uma esfera cobiçada por Ronan e acaba formando uma equipe com Gamora, Rocket, Groot e Drax. Eles descobrem que a esfera contém uma pedra de poder extraordinário. Ronan tenta usá-la para destruir Xandar, mas os Guardiões conseguem derrotá-lo e entregam a pedra à Tropa Nova para ser protegida."},
+  {s:"Saga do Infinito",n:10,t:"Guardiões da Galáxia Vol. 2",p:"recommended",type:"Filme",sum:"Peter Quill conhece Ego, seu pai biológico, e descobre que ele é um Celestial. Ego pretende expandir sua própria essência por inúmeros mundos e precisa do poder de Peter para completar o plano. Os Guardiões o impedem. Yondu se sacrifica para salvar Peter, e Gamora e Nebulosa avançam na reconciliação de sua relação."},
+  {s:"Saga do Infinito",n:11,t:"Vingadores: Era de Ultron",p:"essential",type:"Filme",sum:"Tony Stark e Bruce Banner usam o cetro de Loki em uma tentativa de criar um sistema de defesa chamado Ultron. A inteligência artificial se volta contra a humanidade. Wanda e Pietro Maximoff inicialmente ajudam Ultron, mas mudam de lado. Visão nasce usando o corpo criado por Ultron, a inteligência de JARVIS e a pedra presente no cetro. Pietro morre na batalha de Sokovia, e uma nova formação dos Vingadores começa a surgir."},
+  {s:"Saga do Infinito",n:12,t:"Homem-Formiga",p:"recommended",type:"Filme",sum:"Scott Lang é recrutado por Hank Pym para usar o traje do Homem-Formiga, capaz de alterar seu tamanho. Ele aprende a controlar o traje e impede Darren Cross de vender a tecnologia do Jaqueta Amarela. Para vencer, Scott encolhe além do limite seguro e entra no chamado Reino Quântico, mas consegue retornar."},
+  {s:"Saga do Infinito",n:13,t:"Capitão América: Guerra Civil",p:"essential",type:"Filme",sum:"Após novas mortes envolvendo os Vingadores, governos propõem os Acordos de Sokovia para controlar as ações da equipe. Tony apoia os acordos; Steve se opõe. Bucky reaparece e é incriminado por um atentado. O conflito divide os heróis. Steve revela a Tony que Bucky, sob controle da HYDRA, matou seus pais. Steve e Bucky partem, Tony fica para trás e os Vingadores terminam profundamente divididos."},
+  {s:"Saga do Infinito",n:14,t:"Pantera Negra",p:"recommended",type:"Filme",sum:"T'Challa assume o trono de Wakanda após a morte de seu pai. Erik Killmonger o desafia, toma o trono e pretende usar a tecnologia e as armas de vibranium de Wakanda fora do país. T'Challa retorna, derrota Killmonger e decide abandonar parte do isolamento de Wakanda, começando a compartilhar seus recursos e conhecimento com o mundo."},
+  {s:"Saga do Infinito",n:15,t:"Homem-Aranha: De Volta ao Lar",p:"recommended",type:"Filme",sum:"Peter Parker tenta conciliar a escola com sua atividade como Homem-Aranha e quer provar a Tony Stark que está pronto para responsabilidades maiores. Ele enfrenta Adrian Toomes, o Abutre, que comercializa armas feitas com tecnologia alienígena recuperada após a Batalha de Nova York. Peter derrota Toomes sem a ajuda do traje avançado. Tony oferece a ele uma vaga nos Vingadores, mas Peter recusa naquele momento."},
+  {s:"Saga do Infinito",n:16,t:"Doutor Estranho",p:"essential",type:"Filme",sum:"Stephen Strange perde a precisão das mãos em um acidente e busca uma forma de se curar. Em Kamar-Taj, aprende magia com a Anciã e conhece Wong e Mordo. Kaecilius tenta trazer Dormammu e a Dimensão Negra para a Terra. Strange usa o Olho de Agamotto e sua capacidade de manipular o tempo para prender Dormammu em um ciclo até que ele recue."},
+  {s:"Saga do Infinito",n:17,t:"Thor: Ragnarok",p:"essential",type:"Filme",sum:"Hela, irmã de Thor, retorna após a morte de Odin, destrói Mjölnir e toma Asgard. Thor acaba em Sakaar, reencontra Hulk e se alia a Loki e Valquíria. Thor descobre que seu poder não depende de Mjölnir. Para derrotar Hela, permite que Ragnarok aconteça e Asgard é destruída. Os sobreviventes partem em uma nave procurando um novo lar."},
+  {s:"Saga do Infinito",n:18,t:"Vingadores: Guerra Infinita",p:"essential",type:"Filme",sum:"Thanos começa a reunir as pedras que os heróis encontraram ao longo da história. Ele ataca a nave dos asgardianos, mata Loki e obtém o Tesseract. Os heróis se dividem entre diferentes frentes para tentar detê-lo. Thanos consegue reunir todas as seis pedras. Thor o atinge com uma nova arma, mas não consegue impedi-lo de estalar os dedos. Metade dos seres vivos desaparece."},
+  {s:"Saga do Infinito",n:19,t:"Homem-Formiga e a Vespa",p:"recommended",type:"Filme",sum:"Scott está em prisão domiciliar por ter ajudado Steve Rogers. Hank Pym e Hope tentam resgatar Janet Van Dyne do Reino Quântico e conseguem trazê-la de volta. Scott volta a entrar no Reino Quântico para coletar energia. Enquanto está lá, Hank, Hope e Janet desaparecem como consequência do estalo de Thanos, deixando Scott preso."},
+  {s:"Saga do Infinito",n:20,t:"Vingadores: Ultimato",p:"essential",type:"Filme",sum:"Cinco anos após o estalo, Scott consegue sair do Reino Quântico e sugere que ele pode permitir viagens no tempo. Os Vingadores viajam a momentos anteriores para reunir as seis pedras. Natasha se sacrifica para obter a pedra em Vormir. Hulk usa as pedras e traz de volta os desaparecidos. Thanos de 2014 chega ao presente, mas Tony usa as pedras para derrotá-lo e morre. Steve devolve as pedras e decide viver sua vida no passado; já idoso, entrega seu escudo a Sam Wilson."},
+
+  {s:"Pós-Ultimato / Multiverso",n:21,t:"Loki — Temporada 1",p:"essential",type:"Série",sum:"O Loki que escapou com o Tesseract durante a viagem no tempo dos Vingadores é capturado pela Autoridade de Variância Temporal, a TVA. Ele conhece Mobius e Sylvie, outra variante de Loki. Eles descobrem que os Guardiões do Tempo eram uma fachada e chegam ao homem por trás da organização, Aquele Que Permanece. Sylvie o mata apesar dos avisos de que isso poderia desencadear consequências imprevisíveis. Loki retorna à TVA e percebe que algo mudou."},
+  {s:"Pós-Ultimato / Multiverso",n:22,t:"WandaVision",p:"essential",type:"Série",sum:"Pouco depois de retornar após o estalo, Wanda cria involuntariamente uma realidade ao redor da cidade de Westview, onde vive uma vida idealizada com Visão e seus filhos Billy e Tommy. Agatha Harkness investiga o poder de Wanda e a identifica como a Feiticeira Escarlate. Wanda desfaz a realidade, perdendo Visão e os filhos criados por ela. Monica Rambeau ganha poderes durante os acontecimentos. Wanda parte levando o Darkhold e começa a estudá-lo."},
+  {s:"Pós-Ultimato / Multiverso",n:23,t:"Falcão e o Soldado Invernal",p:"recommended",type:"Série",sum:"Sam Wilson entrega inicialmente o escudo de Steve ao governo, que escolhe John Walker como novo Capitão América. Sam e Bucky enfrentam os Apátridas enquanto lidam com o legado de Steve. Após Walker matar um homem publicamente, ele perde o título. Sam aceita finalmente o escudo, assume o manto de Capitão América e faz sua primeira aparição pública nessa identidade."},
+  {s:"Pós-Ultimato / Multiverso",n:24,t:"Shang-Chi e a Lenda dos Dez Anéis",p:"recommended",type:"Filme",sum:"Shang-Chi vive afastado de seu pai, Wenwu, líder da organização dos Dez Anéis. Ele retorna à família e descobre que Wenwu está sendo manipulado por uma entidade aprisionada em Ta Lo. Wenwu morre e entrega os Dez Anéis a Shang-Chi. Depois da batalha, Wong procura Shang-Chi e Katy para investigar a origem dos anéis junto de Bruce Banner e Carol Danvers."},
+  {s:"Pós-Ultimato / Multiverso",n:25,t:"Homem-Aranha: Longe de Casa",p:"recommended",type:"Filme",sum:"Peter tenta viver após a morte de Tony Stark durante uma viagem escolar à Europa. Quentin Beck, o Mysterio, se apresenta como herói, mas Peter descobre que ele usa drones e ilusões para fabricar ameaças. Peter o derrota. Depois, um vídeo manipulado por Mysterio é divulgado por J. Jonah Jameson, que revela ao mundo que Peter Parker é o Homem-Aranha."},
+  {s:"Pós-Ultimato / Multiverso",n:26,t:"Homem-Aranha: Sem Volta Para Casa",p:"essential",type:"Filme",sum:"Com sua identidade exposta, Peter pede a Stephen Strange que faça todos esquecerem que ele é o Homem-Aranha. O feitiço dá errado e pessoas de outros universos que conhecem a identidade do Homem-Aranha começam a aparecer. Peter encontra outras duas versões de si mesmo e tenta salvar os vilões em vez de simplesmente enviá-los de volta. Tia May morre. Para impedir que as rupturas entre universos continuem, Peter pede que Strange faça todos esquecerem a existência de Peter Parker. O mundo esquece quem ele é."},
+  {s:"Pós-Ultimato / Multiverso",n:27,t:"Doutor Estranho no Multiverso da Loucura",p:"essential",type:"Filme",sum:"Stephen Strange conhece America Chavez, uma jovem capaz de viajar fisicamente entre universos. Wanda, influenciada pelo Darkhold, quer tomar o poder de America para alcançar uma realidade onde possa viver com Billy e Tommy. Strange e America atravessam diferentes universos tentando escapar dela. Wanda percebe o terror que causa aos próprios filhos em outra realidade, destrói o Darkhold em todas as realidades e derruba o templo sobre si mesma. America começa a treinar em Kamar-Taj."},
+  {s:"Pós-Ultimato / Multiverso",n:28,t:"Pantera Negra: Wakanda Para Sempre",p:"recommended",type:"Filme",sum:"Wakanda enfrenta a morte de T'Challa enquanto uma nova ameaça surge do reino submarino de Talokan. Namor quer uma aliança contra as nações da superfície, mas entra em conflito com Wakanda. A rainha Ramonda morre durante um ataque. Shuri recria a erva-coração, torna-se a nova Pantera Negra e derrota Namor, mas decide poupar sua vida e estabelece uma trégua."},
+  {s:"Pós-Ultimato / Multiverso",n:29,t:"Loki — Temporada 2",p:"essential",type:"Série",sum:"A TVA enfrenta o colapso provocado pela multiplicação das linhas temporais. Loki aprende a controlar seus deslocamentos no tempo e passa séculos tentando encontrar uma solução. No fim, percebe que o Tear Temporal não pode sustentar todas as ramificações. Loki destrói o Tear, reúne as linhas temporais com as próprias mãos e passa a sustentá-las, enquanto a TVA muda sua missão e deixa de simplesmente podar ramificações."},
+  {s:"Pós-Ultimato / Multiverso",n:30,t:"Guardiões da Galáxia Vol. 3",p:"recommended",type:"Filme",sum:"Rocket é gravemente ferido e os Guardiões precisam descobrir como salvar sua vida. A busca revela seu passado como experimento do Alto Evolucionário. A equipe derrota o vilão e salva suas cobaias. Depois, os Guardiões seguem caminhos diferentes: Peter volta à Terra para viver com o avô, Gamora permanece com os Saqueadores e Rocket assume a liderança de uma nova formação dos Guardiões."},
+  {s:"Pós-Ultimato / Multiverso",n:31,t:"Homem-Formiga e a Vespa: Quantumania",p:"recommended",type:"Filme",sum:"Scott, Hope, Cassie, Hank e Janet são sugados para o Reino Quântico. Lá encontram Kang, um homem exilado que afirma ter enfrentado e destruído inúmeras linhas temporais. Janet revela que o ajudou no passado antes de descobrir do que ele era capaz. A família consegue impedir a fuga de Kang e retorna para casa. Em outro lugar, várias versões de Kang se reúnem após saberem do ocorrido."},
+  {s:"Pós-Ultimato / Multiverso",n:32,t:"Deadpool & Wolverine",p:"essential",type:"Filme",sum:"Deadpool é levado pela TVA e descobre que sua realidade está se deteriorando após a morte de seu 'ser âncora', Wolverine. Ele procura outra versão de Wolverine e os dois acabam no Vazio, onde encontram personagens vindos de diferentes realidades. Juntos enfrentam Cassandra Nova. Deadpool e Wolverine impedem a destruição de sua linha temporal, e a TVA permite que ela continue existindo."},
+  {s:"MCU Atual / Novos Vingadores",n:33,t:"Daredevil: Born Again — Temporada 1",p:"recommended",type:"Série",sum:"Matt Murdock volta a atuar em Nova York enquanto Wilson Fisk entra na política e se torna prefeito. A relação entre vigilantes, polícia e governo fica cada vez mais tensa. Matt é levado novamente ao papel de Demolidor enquanto Fisk amplia seu poder e endurece sua postura contra vigilantes."},
+  {s:"MCU Atual / Novos Vingadores",n:34,t:"Capitão América: Admirável Mundo Novo",p:"essential",type:"Filme",sum:"Sam Wilson atua como Capitão América e se envolve em uma crise internacional envolvendo o presidente Thaddeus Ross e o adamantium descoberto no corpo de Tiamut. Uma conspiração conduzida por Samuel Sterns manipula Ross e outros envolvidos. Ross se transforma no Hulk Vermelho, mas Sam consegue fazê-lo recuperar o controle. Sam reafirma seu papel como Capitão América."},
+  {s:"MCU Atual / Novos Vingadores",n:35,t:"Thunderbolts*",p:"essential",type:"Filme",sum:"Yelena Belova, Bucky Barnes, John Walker, Guardião Vermelho, Fantasma e outros personagens são envolvidos em uma operação ligada a Valentina Allegra de Fontaine. O grupo acaba trabalhando junto enquanto enfrenta Bob e sua contraparte destrutiva, o Vácuo. Ao final, a equipe permanece unida e assume publicamente uma nova identidade heroica."},
+  {s:"MCU Atual / Novos Vingadores",n:36,t:"Quarteto Fantástico: Primeiros Passos",p:"essential",type:"Filme",sum:"Reed Richards, Sue Storm, Johnny Storm e Ben Grimm formam o Quarteto Fantástico em uma realidade diferente da Terra principal acompanhada até aqui. Quando Galactus ameaça consumir o planeta, a equipe se une para enfrentá-lo enquanto protege Franklin, filho de Reed e Sue. O Quarteto consegue salvar seu mundo."},
+  {s:"MCU Atual / Novos Vingadores",n:37,t:"Daredevil: Born Again — Temporada 2",p:"recommended",type:"Série",sum:"A segunda temporada continua o conflito entre Matt Murdock, Wilson Fisk e os vigilantes de Nova York. O resumo desta etapa deve considerar apenas os acontecimentos efetivamente mostrados nesta temporada após você assisti-la."},
+  {s:"MCU Atual / Novos Vingadores",n:38,t:"The Punisher: One Last Kill",p:"recommended",type:"Especial",sum:"Frank Castle retorna em uma nova história ligada ao núcleo urbano de Nova York. O resumo desta etapa deve considerar apenas os acontecimentos efetivamente mostrados no especial após você assisti-lo."},
+  {s:"MCU Atual / Novos Vingadores",n:39,t:"Homem-Aranha: Brand New Day",p:"essential",type:"Filme",sum:"Peter Parker segue sua vida depois de o mundo esquecer sua existência. O resumo desta etapa deve considerar apenas os acontecimentos efetivamente mostrados em Brand New Day após você assisti-lo."},
+
+  {s:"Próximos",n:40,t:"VisionQuest",p:"future",type:"Série",date:"14/10/2026",sum:"Resumo será liberado quando a produção estiver disponível e você a marcar como assistida."},
+  {s:"Próximos",n:41,t:"Vingadores: Doomsday",p:"future",type:"Filme",date:"18/12/2026",sum:"Resumo será liberado quando a produção estiver disponível e você a marcar como assistida."},
+  {s:"Próximos",n:42,t:"Vingadores: Secret Wars",p:"future",type:"Filme",date:"17/12/2027",sum:"Resumo será liberado quando a produção estiver disponível e você a marcar como assistida."}
+];
+
+const knowledge = [
+  {name:"S.H.I.E.L.D.",kind:"organização",revealedAt:1},
+  {name:"HYDRA",kind:"organização",revealedAt:1},
+  {name:"Tesseract",kind:"artefato",revealedAt:1},
+  {name:"Asgard",kind:"lugar",revealedAt:5},
+  {name:"Bifrost",kind:"conceito",revealedAt:5},
+  {name:"Vingadores",kind:"equipe",revealedAt:6},
+  {name:"Sokovia",kind:"lugar",revealedAt:11},
+  {name:"Reino Quântico",kind:"conceito",revealedAt:12},
+  {name:"Wakanda",kind:"lugar",revealedAt:14},
+  {name:"Kamar-Taj",kind:"lugar",revealedAt:16},
+  {name:"Dimensão Negra",kind:"conceito",revealedAt:16},
+  {name:"TVA",kind:"organização",revealedAt:21},
+  {name:"Multiverso",kind:"conceito",revealedAt:21},
+  {name:"Westview",kind:"lugar",revealedAt:22},
+  {name:"Talokan",kind:"lugar",revealedAt:28},
+  {name:"Linhas temporais",kind:"conceito",revealedAt:29}
+];
+
+const characters = [
+  {name:"Steve Rogers",revealedAt:1,updates:[
+    [1,"Capitão América. Desperta no mundo moderno após décadas no gelo."],
+    [6,"Membro fundador dos Vingadores."],
+    [13,"Rompe com Tony e deixa a equipe dividida."],
+    [20,"Devolve as pedras e passa o escudo para Sam Wilson."]
+  ]},
+  {name:"Bucky Barnes",revealedAt:1,updates:[[1,"Melhor amigo de Steve; dado como morto durante a guerra."],[8,"Está vivo e foi transformado no Soldado Invernal pela HYDRA."],[13,"Foge ao lado de Steve após o conflito dos Acordos."]]},
+  {name:"Tony Stark",revealedAt:3,updates:[[3,"Homem de Ferro; revela publicamente sua identidade."],[6,"Membro fundador dos Vingadores."],[13,"Lidera o lado favorável aos Acordos de Sokovia."],[20,"Sacrifica a própria vida para derrotar Thanos."]]},
+  {name:"Thor",revealedAt:5,updates:[[5,"Príncipe de Asgard, novamente digno de Mjölnir."],[17,"Asgard é destruída; lidera os sobreviventes."],[20,"Participa da batalha final contra Thanos."]]},
+  {name:"Loki",revealedAt:5,updates:[[5,"Irmão adotivo de Thor; tentou tomar o trono de Asgard."],[6,"Liderou a invasão de Nova York e foi levado de volta a Asgard."],[18,"É morto por Thanos."],[21,"Uma variante capturada pela TVA conhece Sylvie e Aquele Que Permanece."],[29,"Passa a sustentar as linhas temporais."]]},
+  {name:"Natasha Romanoff",revealedAt:4,updates:[[4,"Agente da S.H.I.E.L.D. conhecida como Viúva Negra."],[6,"Membro fundadora dos Vingadores."],[20,"Sacrifica-se em Vormir para obter uma pedra."]]},
+  {name:"Bruce Banner",revealedAt:6,updates:[[6,"Hulk e membro fundador dos Vingadores."],[11,"Ajuda Tony a criar Ultron."],[20,"Usa as pedras para trazer de volta os desaparecidos."]]},
+  {name:"Wanda Maximoff",revealedAt:11,updates:[[11,"Entra nos Vingadores após enfrentar Ultron."],[22,"Cria Westview, torna-se a Feiticeira Escarlate e parte com o Darkhold."],[27,"Persegue America Chavez entre universos e destrói o Darkhold."]]},
+  {name:"Peter Parker",revealedAt:13,updates:[[13,"Homem-Aranha recrutado por Tony Stark."],[15,"Recusa uma vaga formal nos Vingadores naquele momento."],[25,"Sua identidade é revelada ao mundo."],[26,"O mundo inteiro esquece que Peter Parker existe."]]},
+  {name:"Stephen Strange",revealedAt:16,updates:[[16,"Mestre das artes místicas; protege a Terra de ameaças dimensionais."],[26,"Tenta ajudar Peter e acaba abrindo brechas entre universos."],[27,"Viaja entre universos protegendo America Chavez."]]},
+  {name:"Sam Wilson",revealedAt:8,updates:[[8,"Aliado de Steve conhecido como Falcão."],[20,"Recebe o escudo de Steve Rogers."],[23,"Assume publicamente o manto de Capitão América."],[34,"Atua como Capitão América em uma crise internacional."]]},
+  {name:"Scott Lang",revealedAt:12,updates:[[12,"Assume o traje do Homem-Formiga e retorna do Reino Quântico."],[19,"Fica preso no Reino Quântico após o estalo."],[20,"Ajuda a viabilizar a viagem no tempo dos Vingadores."],[31,"Enfrenta Kang no Reino Quântico."]]},
+  {name:"Carol Danvers",revealedAt:2,updates:[[2,"Descobre sua origem humana e deixa a Terra para ajudar os Skrulls."],[20,"Participa da batalha final contra Thanos."],[28,"Tem seus poderes entrelaçados com Monica e Kamala."]]},
+  {name:"Wilson Fisk",revealedAt:27,updates:[[27,"Reaparece como figura central do submundo de Nova York."],[33,"Demonstra interesse em uma carreira política."],[33,"Torna-se prefeito de Nova York."]]}
+];
+
+const connections = [
+  ["Steve Rogers","Bucky Barnes",1,"amizade"],
+  ["Steve Rogers","S.H.I.E.L.D.",1,"aliança"],
+  ["HYDRA","Tesseract",1,"uso"],
+  ["Tony Stark","S.H.I.E.L.D.",4,"cooperação"],
+  ["Thor","Loki",5,"irmãos"],
+  ["Steve Rogers","Vingadores",6,"membro"],
+  ["Tony Stark","Vingadores",6,"membro"],
+  ["Thor","Vingadores",6,"membro"],
+  ["Natasha Romanoff","Vingadores",6,"membro"],
+  ["Bruce Banner","Vingadores",6,"membro"],
+  ["Steve Rogers","Sam Wilson",8,"aliança"],
+  ["Steve Rogers","Bucky Barnes",8,"conflito / vínculo"],
+  ["Tony Stark","Wanda Maximoff",11,"conflito"],
+  ["Scott Lang","Reino Quântico",12,"acesso"],
+  ["Tony Stark","Peter Parker",13,"mentor"],
+  ["Steve Rogers","Tony Stark",13,"ruptura"],
+  ["Stephen Strange","Kamar-Taj",16,"mestre"],
+  ["Loki","TVA",21,"custódia / aliança"],
+  ["Wanda Maximoff","Westview",22,"criação"],
+  ["Sam Wilson","Capitão América",23,"manto"],
+  ["Peter Parker","Stephen Strange",26,"feitiço"],
+  ["Wilson Fisk","Nova York",33,"prefeito"]
+];
+
+const universeStates = [
+  {revealedAt:1,title:"Steve Rogers",text:"Acordou no mundo moderno após quase 70 anos."},
+  {revealedAt:6,title:"Vingadores",text:"A equipe foi formada e derrotou a invasão de Nova York."},
+  {revealedAt:8,title:"S.H.I.E.L.D.",text:"A organização entrou em colapso após a infiltração da HYDRA ser exposta."},
+  {revealedAt:13,title:"Vingadores",text:"A equipe terminou dividida após os Acordos de Sokovia e o conflito entre Steve e Tony."},
+  {revealedAt:18,title:"Universo",text:"Metade dos seres vivos desapareceu após o estalo de Thanos."},
+  {revealedAt:20,title:"Universo",text:"Os desaparecidos retornaram. Thanos foi derrotado. Tony morreu e Steve passou o escudo a Sam."},
+  {revealedAt:21,title:"TVA / tempo",text:"A estrutura que controlava uma Linha do Tempo Sagrada foi abalada após a morte de Aquele Que Permanece."},
+  {revealedAt:23,title:"Capitão América",text:"Sam Wilson assumiu publicamente o manto."},
+  {revealedAt:26,title:"Peter Parker",text:"O mundo esqueceu completamente a existência de Peter Parker."},
+  {revealedAt:29,title:"Multiverso",text:"Loki passou a sustentar inúmeras linhas temporais, enquanto a TVA mudou sua função."},
+  {revealedAt:33,title:"Nova York",text:"Wilson Fisk tornou-se prefeito e a tensão com vigilantes aumentou."},
+  {revealedAt:35,title:"Novos heróis",text:"Uma nova equipe formada por antigos agentes e anti-heróis passou a ocupar espaço público relevante."}
+];
+
+const achievements = [
+  {icon:"🛡️",name:"Eu poderia fazer isso o dia todo",desc:"Assistir ao primeiro filme.",test:s=>s.has(1)},
+  {icon:"⚙️",name:"Iniciativa Vingadores",desc:"Concluir até Os Vingadores.",test:s=>[1,2,3,4,5,6].every(n=>s.has(n))},
+  {icon:"💥",name:"Guerra Civil",desc:"Chegar ao fim do #13.",test:s=>s.has(13)},
+  {icon:"🫰",name:"Nós estamos no fim do jogo",desc:"Assistir Guerra Infinita.",test:s=>s.has(18)},
+  {icon:"❤️",name:"3000",desc:"Concluir Vingadores: Ultimato.",test:s=>s.has(20)},
+  {icon:"⏳",name:"Variável temporal",desc:"Concluir Loki T1 e T2.",test:s=>s.has(21)&&s.has(29)},
+  {icon:"🌌",name:"Multiversal",desc:"Assistir Sem Volta Para Casa, Multiverso da Loucura e Deadpool & Wolverine.",test:s=>[26,27,32].every(n=>s.has(n))},
+  {icon:"🔴",name:"Só o essencial",desc:"Assistir todos os títulos essenciais já lançados.",test:s=>productions.filter(x=>x.p==="essential"&&x.p!=="future").every(x=>s.has(x.n))},
+  {icon:"🏆",name:"Arquivo completo",desc:"Assistir todos os títulos lançados da lista.",test:s=>productions.filter(x=>x.p!=="future").every(x=>s.has(x.n))}
+];
+
+const STORAGE="mcu-shield-archive-v4";
+const previousV3=JSON.parse(localStorage.getItem("mcu-shield-archive-v3")||"null");
+if(previousV3 && !localStorage.getItem(STORAGE)){
+  const migrated={watched:[],ratings:{},notes:{}};
+  const mapV3=n=>n===33?null:(n>33?n-1:n);
+  (previousV3.watched||[]).forEach(n=>{const m=mapV3(n);if(m)migrated.watched.push(m)});
+  Object.entries(previousV3.ratings||{}).forEach(([n,v])=>{const m=mapV3(Number(n));if(m)migrated.ratings[m]=v});
+  Object.entries(previousV3.notes||{}).forEach(([n,v])=>{const m=mapV3(Number(n));if(m)migrated.notes[m]=v});
+  localStorage.setItem(STORAGE,JSON.stringify(migrated));
+}
+const previousV2=JSON.parse(localStorage.getItem("mcu-shield-archive-v2")||"null");
+const removedOld=new Set([25,29,31,32,34]);
+const oldToNew={};
+let __nn=0;
+for(let __old=1;__old<=48;__old++){if(!removedOld.has(__old)){__nn++;oldToNew[__old]=__nn;}}
+if(previousV2 && !localStorage.getItem(STORAGE)){
+  const migrated={watched:[],ratings:{},notes:{}};
+  (previousV2.watched||[]).forEach(n=>{if(oldToNew[n])migrated.watched.push(oldToNew[n])});
+  Object.entries(previousV2.ratings||{}).forEach(([n,v])=>{if(oldToNew[n])migrated.ratings[oldToNew[n]]=v});
+  Object.entries(previousV2.notes||{}).forEach(([n,v])=>{if(oldToNew[n])migrated.notes[oldToNew[n]]=v});
+  localStorage.setItem(STORAGE,JSON.stringify(migrated));
+}
+const oldProgress=JSON.parse(localStorage.getItem("mcu-essencial-progress-v1")||"[]").filter(n=>n<25);
+let state=JSON.parse(localStorage.getItem(STORAGE)||"null") || {watched:oldProgress,ratings:{},notes:{}};
+let watched=new Set(state.watched||[]);
+let filter="all", query="";
+
+function save(){state.watched=[...watched];localStorage.setItem(STORAGE,JSON.stringify(state))}
+function level(){return watched.size?Math.max(...watched):0}
+function canKnow(revealedAt){return revealedAt<=level()}
+function label(p){return p==="essential"?["🔴 Essencial","essential"]:p==="recommended"?["🟡 Recomendado","recommended"]:["🔵 Futuro","future"]}
+
+function renderStats(){
+  const released=productions.filter(x=>x.p!=="future"), seen=released.filter(x=>watched.has(x.n)).length;
+  const pct=Math.round(seen/released.length*100)||0;
+  pctEl.textContent=pct+"%";progressText.textContent=`${seen} de ${released.length} lançados assistidos`;barFill.style.width=pct+"%";
+  watchedCount.textContent=seen;knowledgeLevel.textContent=level();
+  essentialLeft.textContent=productions.filter(x=>x.p==="essential"&&!watched.has(x.n)).length;
+  ratedCount.textContent=Object.keys(state.ratings).filter(k=>state.ratings[k]>0).length;
+  futureCount.textContent=productions.filter(x=>x.p==="future").length;
+}
+
+function visible(x){
+  if(!x.t.toLowerCase().includes(query))return false;
+  if(filter==="all")return true;if(filter==="essential")return x.p==="essential";if(filter==="recommended")return x.p==="recommended";
+  if(filter==="watched")return watched.has(x.n);if(filter==="unwatched")return !watched.has(x.n);return true;
+}
+
+function renderMarathon(){
+  sections.innerHTML="";
+  [...new Set(productions.map(x=>x.s))].forEach(name=>{
+    const items=productions.filter(x=>x.s===name&&visible(x));if(!items.length)return;
+    const sec=document.createElement("section");sec.className="section";
+    const released=productions.filter(x=>x.s===name&&x.p!=="future"), seen=released.filter(x=>watched.has(x.n)).length;
+    sec.innerHTML=`<div class="section-head"><div class="section-title"><h2>${name}</h2><p>${name==="Próximos"?"Produções futuras":"Marque ao terminar; o resumo só abre depois."}</p></div><div class="count">${name==="Próximos"?items.length+" futuros":seen+" / "+released.length+" assistidos"}</div></div><div class="grid"></div>`;
+    const grid=sec.querySelector(".grid");
+    items.forEach(x=>{
+      const [lab,cls]=label(x.p), seen=watched.has(x.n), rating=state.ratings[x.n]||0, note=state.notes[x.n]||"";
+      const el=document.createElement("article");el.className="item"+(seen?" watched":"");
+      el.innerHTML=`
+        <div class="num">${String(x.n).padStart(2,"0")}</div>
+        <div><div class="title-line"><h3>${x.t}</h3><span class="badge ${cls}">${lab}</span></div><div class="type">${x.type}${x.date?" • estreia "+x.date:""}</div>${x.p==="future"?'<div class="future-note">Ainda bloqueado.</div>':""}</div>
+        <input class="check" type="checkbox" ${seen?"checked":""} ${x.p==="future"?"disabled":""} aria-label="Marcar ${x.t} como assistido">
+        <div class="summary">
+          <b>O que você sabe até aqui:</b><br>${x.sum}
+          <div class="reaction">
+            <div class="rating" aria-label="Sua nota de 1 a 5">${[1,2,3,4,5].map(i=>`<button class="star ${i<=rating?"on":""}" data-score="${i}" type="button">★</button>`).join("")}</div>
+            <textarea class="note" placeholder="Minha reação...">${note}</textarea>
+          </div>
+        </div>`;
+      el.querySelector(".check").addEventListener("change",e=>{e.target.checked?watched.add(x.n):watched.delete(x.n);save();renderAll()});
+      el.querySelectorAll(".star").forEach(st=>st.addEventListener("click",()=>{state.ratings[x.n]=Number(st.dataset.score);save();renderAll()}));
+      el.querySelector(".note")?.addEventListener("change",e=>{state.notes[x.n]=e.target.value;save()});
+      grid.appendChild(el)
+    });
+    sections.appendChild(sec)
+  });
+  if(!sections.children.length)sections.innerHTML='<div class="empty">Nenhuma produção encontrada.</div>'
+}
+
+function currentStatus(ch){
+  let result="CLASSIFIED";
+  ch.updates.forEach(([at,text])=>{if(canKnow(at))result=text});
+  return result;
+}
+function renderDatabase(){
+  const known=knowledge.filter(k=>canKnow(k.revealedAt));
+  knowledgeChips.innerHTML=known.length?known.map(k=>`<span class="chip">${k.name} <small>• ${k.kind}</small></span>`).join(""):'<span class="small">Nenhuma entrada desbloqueada ainda.</span>';
+  const future=knowledge.filter(k=>!canKnow(k.revealedAt)).slice(0,5);
+  classifiedPreview.innerHTML=future.map(()=>`<div class="classified">████████ — CLASSIFIED</div>`).join("") || '<div class="small">Nenhuma entrada classificada restante.</div>';
+  characterGrid.innerHTML=characters.map(ch=>{
+    const unlocked=canKnow(ch.revealedAt);
+    return `<div class="db-card ${unlocked?"":"locked"}"><h4>${unlocked?ch.name:"████████"}</h4><p>${unlocked?currentStatus(ch):'<span class="classified">ACCESS DENIED</span>'}</p></div>`
+  }).join("");
+}
+
+function nodeKind(name){
+  if(["S.H.I.E.L.D.","HYDRA","Vingadores","TVA"].includes(name))return"org";
+  if(["Tesseract","Reino Quântico","Kamar-Taj","Westview","Nova York"].includes(name))return"concept";
+  return"person"
+}
+function renderConnections(){
+  const cons=connections.filter(c=>canKnow(c[2]));
+  const names=[...new Set(cons.flatMap(c=>[c[0],c[1]]))];
+  connectionCount.textContent=`${names.length} nós • ${cons.length} conexões`;
+  const svg=network;svg.innerHTML="";
+  if(!names.length){svg.innerHTML='<text x="500" y="260" text-anchor="middle" fill="#777" font-size="18">Assista ao primeiro título para desbloquear a rede.</text>';nodeList.innerHTML="";return}
+  const cx=500,cy=260,r=Math.min(205,130+names.length*4);
+  const pos={};
+  names.forEach((name,i)=>{const a=(Math.PI*2*i/names.length)-Math.PI/2;pos[name]={x:cx+Math.cos(a)*r,y:cy+Math.sin(a)*r}});
+  cons.forEach(([a,b])=>{const l=document.createElementNS("http://www.w3.org/2000/svg","line");l.setAttribute("x1",pos[a].x);l.setAttribute("y1",pos[a].y);l.setAttribute("x2",pos[b].x);l.setAttribute("y2",pos[b].y);l.setAttribute("stroke","#333");l.setAttribute("stroke-width","2");svg.appendChild(l)});
+  names.forEach(name=>{
+    const g=document.createElementNS("http://www.w3.org/2000/svg","g"), c=document.createElementNS("http://www.w3.org/2000/svg","circle"), t=document.createElementNS("http://www.w3.org/2000/svg","text");
+    c.setAttribute("cx",pos[name].x);c.setAttribute("cy",pos[name].y);c.setAttribute("r","16");c.setAttribute("fill",nodeKind(name)==="org"?"#6a5acd":nodeKind(name)==="concept"?"#b18a3c":"#9f1014");c.setAttribute("stroke","#ddd");
+    t.setAttribute("x",pos[name].x);t.setAttribute("y",pos[name].y+31);t.setAttribute("text-anchor","middle");t.setAttribute("fill","#ddd");t.setAttribute("font-size","11");t.textContent=name;g.append(c,t);svg.appendChild(g)
+  });
+  nodeList.innerHTML=names.map(n=>`<div class="node-pill">${n}</div>`).join("")
+}
+
+function renderWhere(){
+  const usable=universeStates.filter(s=>canKnow(s.revealedAt));
+  const latestByTitle={};usable.forEach(s=>latestByTitle[s.title]=s);
+  whereList.innerHTML=Object.values(latestByTitle).length?Object.values(latestByTitle).map(s=>`<div class="where"><h4>${s.title}</h4><p>${s.text}</p></div>`).join(""):'<div class="empty">O arquivo ainda não possui um estado do universo.</div>'
+}
+
+function renderAchievements(){
+  achievementGrid.innerHTML=achievements.map(a=>{const ok=a.test(watched);return `<div class="achievement ${ok?"":"locked"}"><div class="icon">${a.icon}</div><h4>${a.name}</h4><p>${a.desc}${ok?" • Desbloqueada":""}</p></div>`}).join("")
+}
+
+function renderRanking(){
+  const rated=productions.filter(x=>state.ratings[x.n]>0).sort((a,b)=>(state.ratings[b.n]-state.ratings[a.n])||(a.n-b.n));
+  rankingCount.textContent=`${rated.length} avaliados`;
+  rankingList.innerHTML=rated.length?rated.map((x,i)=>`<div class="rank-row"><div class="rank-pos">#${i+1}</div><div class="rank-title">${x.t}</div><div class="rank-score">${"★".repeat(state.ratings[x.n])}</div></div>`).join(""):'<div class="empty">Dê uma nota após assistir para montar seu ranking.</div>'
+}
+
+function renderAll(){renderStats();renderMarathon();renderDatabase();renderConnections();renderWhere();renderAchievements();renderRanking()}
+
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));document.getElementById("panel-"+btn.dataset.panel).classList.add("active")
+}));
+document.querySelectorAll(".filter").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));btn.classList.add("active");filter=btn.dataset.filter;renderMarathon()}));
+search.addEventListener("input",e=>{query=e.target.value.trim().toLowerCase();renderMarathon()});
+resetBtn.addEventListener("click",()=>{if(confirm("Apagar progresso, notas e avaliações?")){state={watched:[],ratings:{},notes:{}};watched=new Set();save();renderAll()}});
+exportBtn.addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="mcu-progresso.json";a.click();URL.revokeObjectURL(url)
+});
+
+const pctEl=document.getElementById("pct");
+renderAll();
+</script>
+</body>
+</html>
