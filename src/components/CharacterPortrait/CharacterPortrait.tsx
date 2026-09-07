@@ -12,7 +12,8 @@ export function CharacterPortrait({ character, knowledgeLevel }: CharacterPortra
   if (!image || !image.src) {
     return (
       <div className="character-portrait asset-pending">
-        <span>Asset pendente</span>
+        <span>CLASSIFIED</span>
+        <b>Portrait unavailable</b>
       </div>
     );
   }

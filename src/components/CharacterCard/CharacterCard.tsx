@@ -14,6 +14,7 @@ export function CharacterCard({ character, knowledgeLevel }: CharacterCardProps)
   const unlocked = character.revealedAt <= knowledgeLevel;
   const firstSeen = productions.find(movie => movie.n === character.firstSeen);
   const appearances = unlockedAppearances(character, knowledgeLevel);
+  const appearancesLabel = `${appearances.length} ${appearances.length === 1 ? "aparição conhecida" : "aparições conhecidas"}`;
 
   return unlocked ? (
     <Link className="db-card character-card" to={`/character/${character.id}`}>
@@ -23,7 +24,7 @@ export function CharacterCard({ character, knowledgeLevel }: CharacterCardProps)
         <dl className="character-meta">
           <div><dt>Status conhecido</dt><dd>{currentStatus(character, knowledgeLevel)}</dd></div>
           <div><dt>Primeira aparição</dt><dd>{firstSeen?.t || "CLASSIFIED"}</dd></div>
-          <div><dt>Aparições vistas</dt><dd>{appearances.length}</dd></div>
+          <div><dt>Aparições vistas</dt><dd>{appearancesLabel}</dd></div>
         </dl>
       </div>
     </Link>
