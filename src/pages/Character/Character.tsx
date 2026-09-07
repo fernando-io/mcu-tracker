@@ -4,18 +4,17 @@ import { connections } from "../../data/connections";
 import { productions } from "../../data/movies";
 import { CharacterPortrait } from "../../components/CharacterPortrait/CharacterPortrait";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { currentStatus } from "../../utils/mcu";
-import { level } from "../../utils/mcu";
+import { createProgressiveKnowledge, currentCharacterStatus, hasEncounteredCharacter } from "../../utils/progressiveKnowledge";
 import { unlockedAppearances } from "../../utils/characters";
 
 export function CharacterPage() {
   const { id } = useParams();
   const [state] = useLocalStorage();
   const watched = new Set(state.watched || []);
-  const knowledgeLevel = level(watched);
+  const knowledge = createProgressiveKnowledge(watched);
   const character = characters.find(item => item.id === id);
 
-  if (!character || character.revealedAt > knowledgeLevel) {
+  if (!character || !hasEncounteredCharacter(character, knowledge)) {
     return (
       <main className="wrap character-page">
         <Link className="back-link" to="/?tab=arquivo">Voltar para Database</Link>
@@ -24,13 +23,13 @@ export function CharacterPage() {
     );
   }
 
-  const status = currentStatus(character, knowledgeLevel);
-  const firstSeen = productions.find(movie => movie.n === character.firstSeen);
-  const appearances = unlockedAppearances(character, knowledgeLevel)
+  const status = currentCharacterStatus(character, knowledge);
+  const firstSeen = productions.find(movie => movie.n === character.firstAppearance);
+  const appearances = unlockedAppearances(character, knowledge)
     .map(number => productions.find(movie => movie.n === number))
     .filter(Boolean);
   const relationships = connections.filter(connection =>
-    connection[2] <= knowledgeLevel && (connection[0] === character.name || connection[1] === character.name)
+    knowledge.canReveal(connection[2]) && (connection[0] === character.name || connection[1] === character.name)
   );
   const appearancesLabel = `${appearances.length} ${appearances.length === 1 ? "aparição conhecida" : "aparições conhecidas"}`;
 
@@ -40,12 +39,12 @@ export function CharacterPage() {
 
       <section className="card character-profile dossier-hero">
         <div className="dossier-portrait-frame">
-          <CharacterPortrait character={character} knowledgeLevel={knowledgeLevel} />
+          <CharacterPortrait character={character} knowledge={knowledge} />
         </div>
         <div className="character-profile-copy dossier-identity">
           <div className="dossier-classification">
             <span>Dossiê S.H.I.E.L.D.</span>
-            <b>clearance level {knowledgeLevel}</b>
+            <b>clearance level {knowledge.acquiredCount}</b>
           </div>
           <h1>{character.name}</h1>
           <div className="dossier-status-block">

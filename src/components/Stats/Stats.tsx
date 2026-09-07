@@ -2,13 +2,13 @@ interface StatsProps {
   pct: number;
   seen: number;
   releasedTotal: number;
-  knowledgeLevel: number;
+  acquiredKnowledgeCount: number;
   essentialLeft: number;
   ratedCount: number;
   futureCount: number;
 }
 
-export function Stats({ pct, seen, releasedTotal, knowledgeLevel, essentialLeft, ratedCount, futureCount }: StatsProps) {
+export function Stats({ pct, seen, releasedTotal, acquiredKnowledgeCount, essentialLeft, ratedCount, futureCount }: StatsProps) {
   return (
     <div className="card stats-card">
       <div className="progress-row">
@@ -16,7 +16,7 @@ export function Stats({ pct, seen, releasedTotal, knowledgeLevel, essentialLeft,
           <div className="big">{pct}%</div>
           <div className="small">{seen} de {releasedTotal} lançados assistidos</div>
         </div>
-        <div className="small">Nível de conhecimento<br /><b>{knowledgeLevel}</b></div>
+        <div className="small">Conhecimento adquirido<br /><b>{acquiredKnowledgeCount}</b></div>
       </div>
       <div className="bar"><span style={{ width: `${pct}%` }} /></div>
       <div className="stats-mini">
@@ -28,3 +28,5 @@ export function Stats({ pct, seen, releasedTotal, knowledgeLevel, essentialLeft,
     </div>
   );
 }
+
+

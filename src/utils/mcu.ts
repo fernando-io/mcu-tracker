@@ -1,12 +1,4 @@
-import type { Character, Movie, Priority } from "../types";
-
-export function level(watched: Set<number>) {
-  return watched.size ? Math.max(...watched) : 0;
-}
-
-export function canKnow(revealedAt: number, knowledgeLevel: number) {
-  return revealedAt <= knowledgeLevel;
-}
+import type { Movie, Priority } from "../types";
 
 export function label(priority: Priority): [string, string] {
   return priority === "essential"
@@ -24,14 +16,6 @@ export function visible(movie: Movie, query: string, filter: string, watched: Se
   if (filter === "watched") return watched.has(movie.n);
   if (filter === "unwatched") return !watched.has(movie.n);
   return true;
-}
-
-export function currentStatus(character: Character, knowledgeLevel: number) {
-  let result = "CLASSIFIED";
-  character.updates.forEach(([at, text]) => {
-    if (canKnow(at, knowledgeLevel)) result = text;
-  });
-  return result;
 }
 
 export function nodeKind(name: string) {

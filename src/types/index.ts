@@ -13,11 +13,15 @@ export interface Movie {
 export interface Character {
   id: string;
   name: string;
-  firstSeen: number;
+  firstAppearance: number;
   images: CharacterImage[];
   appearances: number[];
+  updates: CharacterUpdate[];
+}
+
+export interface CharacterUpdate {
   revealedAt: number;
-  updates: [number, string][];
+  text: string;
 }
 
 export interface CharacterImage {
@@ -51,7 +55,7 @@ export interface Achievement {
   icon: string;
   name: string;
   desc: string;
-  test: (watched: Set<number>) => boolean;
+  test: (knowledge: import("../utils/progressiveKnowledge").ProgressiveKnowledgeEngine) => boolean;
 }
 
 export type TabId =

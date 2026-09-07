@@ -2,11 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { achievements } from "../../data/achievements";
 import { characters } from "../../data/characters";
-import { connections, knowledge, universeStates } from "../../data/connections";
+import { connections, knowledge as knowledgeEntries, universeStates } from "../../data/connections";
 import { productions } from "../../data/movies";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { FilterId, TabId } from "../../types";
-import { canKnow, level, visible } from "../../utils/mcu";
+import { visible } from "../../utils/mcu";
+import { createProgressiveKnowledge } from "../../utils/progressiveKnowledge";
 import { AchievementCard } from "../../components/AchievementCard/AchievementCard";
 import { CharacterCard } from "../../components/CharacterCard/CharacterCard";
 import { ConnectionGraph } from "../../components/ConnectionGraph/ConnectionGraph";
@@ -23,7 +24,7 @@ export function Home() {
   const [query, setQuery] = useState("");
 
   const watched = useMemo(() => new Set(state.watched || []), [state.watched]);
-  const knowledgeLevel = useMemo(() => level(watched), [watched]);
+  const progressiveKnowledge = useMemo(() => createProgressiveKnowledge(watched), [watched]);
   const released = useMemo(() => productions.filter(movie => movie.p !== "future"), []);
   const seen = useMemo(() => released.filter(movie => watched.has(movie.n)).length, [released, watched]);
   const pct = Math.round(seen / released.length * 100) || 0;
@@ -33,10 +34,10 @@ export function Home() {
       movies: productions.filter(movie => movie.s === name && visible(movie, query.trim().toLowerCase(), filter, watched)),
     }))
     .filter(section => section.movies.length), [filter, query, watched]);
-  const knownKnowledge = knowledge.filter(entry => canKnow(entry.revealedAt, knowledgeLevel));
-  const futureKnowledge = knowledge.filter(entry => !canKnow(entry.revealedAt, knowledgeLevel)).slice(0, 5);
-  const visibleConnections = connections.filter(connection => canKnow(connection[2], knowledgeLevel));
-  const latestUniverseStates = Object.values(Object.fromEntries(universeStates.filter(state => canKnow(state.revealedAt, knowledgeLevel)).map(state => [state.title, state])));
+  const knownKnowledge = knowledgeEntries.filter(entry => progressiveKnowledge.canReveal(entry));
+  const futureKnowledge = knowledgeEntries.filter(entry => !progressiveKnowledge.canReveal(entry)).slice(0, 5);
+  const visibleConnections = connections.filter(connection => progressiveKnowledge.canReveal(connection[2]));
+  const latestUniverseStates = Object.values(Object.fromEntries(universeStates.filter(state => progressiveKnowledge.canReveal(state)).map(state => [state.title, state])));
   const ratedMovies = productions
     .filter(movie => state.ratings[movie.n] > 0)
     .sort((a, b) => (state.ratings[b.n] - state.ratings[a.n]) || (a.n - b.n));
@@ -90,7 +91,7 @@ export function Home() {
           pct={pct}
           seen={seen}
           releasedTotal={released.length}
-          knowledgeLevel={knowledgeLevel}
+          acquiredKnowledgeCount={progressiveKnowledge.acquiredCount}
           essentialLeft={productions.filter(movie => movie.p === "essential" && !watched.has(movie.n)).length}
           ratedCount={Object.keys(state.ratings).filter(key => state.ratings[Number(key)] > 0).length}
           futureCount={productions.filter(movie => movie.p === "future").length}
@@ -119,7 +120,7 @@ export function Home() {
           <div className="knowledge-layout">
             <div className="card knowledge-card">
               <h3>O que eu sei até aqui</h3>
-              <p>Conceitos e lugares desbloqueados apenas até seu nível atual de conhecimento.</p>
+              <p>Conceitos e lugares desbloqueados apenas pelas produções que você assistiu.</p>
               <div className="chips">{knownKnowledge.length ? knownKnowledge.map(entry => <span key={entry.name} className="chip">{entry.name} <small>• {entry.kind}</small></span>) : <span className="small">Nenhuma entrada desbloqueada ainda.</span>}</div>
             </div>
             <div className="card knowledge-card">
@@ -130,7 +131,7 @@ export function Home() {
           </div>
           <div className="section">
             <div className="section-head"><div className="section-title"><h2>Arquivo de personagens</h2><p>Status conhecido neste exato ponto da maratona.</p></div></div>
-            <div className="db-grid">{characters.map(character => <CharacterCard key={character.name} character={character} knowledgeLevel={knowledgeLevel} />)}</div>
+            <div className="db-grid">{characters.map(character => <CharacterCard key={character.name} character={character} knowledge={progressiveKnowledge} />)}</div>
           </div>
         </section>
 
@@ -148,7 +149,7 @@ export function Home() {
         <section className={`panel ${activeTab === "conquistas" ? "active" : ""}`}>
           <div className="section">
             <div className="section-head"><div className="section-title"><h2>Conquistas</h2><p>Marcos da sua maratona.</p></div></div>
-            <div className="achievement-grid">{achievements.map(achievement => <AchievementCard key={achievement.name} achievement={achievement} unlocked={achievement.test(watched)} />)}</div>
+            <div className="achievement-grid">{achievements.map(achievement => <AchievementCard key={achievement.name} achievement={achievement} unlocked={achievement.test(progressiveKnowledge)} />)}</div>
           </div>
         </section>
 
@@ -159,8 +160,9 @@ export function Home() {
           </div>
         </section>
 
-        <div className="credit">Projeto pessoal de maratona. Regra estrutural: nenhum conteúdo com <code>revealedAt</code> acima do seu nível de conhecimento é renderizado.</div>
+        <div className="credit">Projeto pessoal de maratona. Regra estrutural: apenas conteúdos vinculados a produções efetivamente assistidas são renderizados.</div>
       </main>
     </>
   );
 }
+
