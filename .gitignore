@@ -21,3 +21,9 @@ pnpm-debug.log*
 
 # macOS
 .DS_Store
+# TypeScript build info
+*.tsbuildinfo
+
+# generated config declarations
+vite.config.js
+vite.config.d.ts
