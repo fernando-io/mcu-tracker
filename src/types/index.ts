@@ -31,6 +31,30 @@ export interface CharacterImage {
   source?: string;
 }
 
+export enum RelationshipTargetType {
+  Character = "Character",
+  Organization = "Organization",
+}
+
+export enum RelationshipType {
+  Ally = "ALLY",
+  Enemy = "ENEMY",
+  Member = "MEMBER",
+  Family = "FAMILY",
+  Mentor = "MENTOR",
+  Rival = "RIVAL",
+  Leader = "LEADER",
+  Subordinate = "SUBORDINATE",
+}
+
+export interface CharacterRelationship {
+  characterId: string;
+  revealedAt: number;
+  targetType: RelationshipTargetType;
+  targetId: string;
+  type: RelationshipType;
+}
+
 export type Connection = [string, string, number, string];
 
 export interface KnowledgeEntry {

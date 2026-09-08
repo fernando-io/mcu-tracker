@@ -1,13 +1,14 @@
 import { Link, useParams } from "react-router-dom";
 import { AppearanceCard } from "../../components/AppearanceCard/AppearanceCard";
 import { CharacterPortrait } from "../../components/CharacterPortrait/CharacterPortrait";
+import { RelationshipRecord } from "../../components/RelationshipRecord/RelationshipRecord";
 import { characters } from "../../data/characters";
-import { connections } from "../../data/connections";
 import { productions } from "../../data/movies";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { Movie } from "../../types";
 import { unlockedAppearances } from "../../utils/characters";
 import { createProgressiveKnowledge, currentCharacterStatus, hasEncounteredCharacter } from "../../utils/progressiveKnowledge";
+import { knownCharacterRelationships } from "../../utils/relationships";
 
 export function CharacterPage() {
   const { id } = useParams();
@@ -30,9 +31,7 @@ export function CharacterPage() {
   const appearances = unlockedAppearances(character, knowledge)
     .map(number => productions.find(movie => movie.n === number))
     .filter((movie): movie is Movie => Boolean(movie));
-  const relationships = connections.filter(connection =>
-    knowledge.canReveal(connection[2]) && (connection[0] === character.name || connection[1] === character.name)
-  );
+  const relationships = knownCharacterRelationships(character, knowledge);
   const appearancesLabel = `${appearances.length} ${appearances.length === 1 ? "aparição conhecida" : "aparições conhecidas"}`;
 
   return (
@@ -78,17 +77,11 @@ export function CharacterPage() {
       <section className="section dossier-section">
         <div className="section-head"><div className="section-title"><h2>Relacionamentos</h2><p>Conexões já reveladas.</p></div></div>
         <div className="dossier-record-list relationships-list">
-          {relationships.length ? relationships.map(([a, b, at, relation], index) => (
-            <div key={`${a}-${b}-${at}-${index}`} className="dossier-record relationship-record intel-link">
-              <span>INT</span>
-              <div><h4>{a === character.name ? b : a}</h4><p>{relation}</p></div>
-            </div>
+          {relationships.length ? relationships.map(relationship => (
+            <RelationshipRecord key={`${relationship.characterId}-${relationship.targetType}-${relationship.targetId}-${relationship.revealedAt}-${relationship.type}`} relationship={relationship} />
           )) : <div className="empty">Nenhum relacionamento desbloqueado.</div>}
         </div>
       </section>
     </main>
   );
 }
-
-
-
