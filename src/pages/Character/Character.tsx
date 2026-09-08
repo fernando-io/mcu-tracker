@@ -6,8 +6,8 @@ import { characters } from "../../data/characters";
 import { productions } from "../../data/movies";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { Movie } from "../../types";
-import { unlockedAppearances } from "../../utils/characters";
-import { createProgressiveKnowledge, currentCharacterStatus, hasEncounteredCharacter } from "../../utils/progressiveKnowledge";
+import { currentCharacterStatus, hasEncounteredCharacter, unlockedAppearances } from "../../utils/characters";
+import { createProgressiveKnowledge } from "../../utils/progressiveKnowledge";
 import { knownCharacterRelationships } from "../../utils/relationships";
 
 export function CharacterPage() {

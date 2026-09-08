@@ -207,12 +207,7 @@ export const characters: Character[] = [
       { revealedAt: 33, src: characterPortrait("wilson-fisk", 33), alt: "Wilson Fisk", source: "local: src/assets/characters/wilson-fisk/33.webp" },
     ],
     updates: [
-      { revealedAt: 27, text: "Reaparece como figura central do submundo de Nova York." },
-      { revealedAt: 33, text: "Demonstra interesse em uma carreira política." },
-      { revealedAt: 33, text: "Torna-se prefeito de Nova York." },
+      { revealedAt: 33, text: "Reaparece como figura central do submundo de Nova York e torna-se prefeito." },
     ],
   },
 ];
-
-
-

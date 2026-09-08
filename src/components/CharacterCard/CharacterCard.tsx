@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Character } from "../../types";
-import { currentCharacterStatus, hasEncounteredCharacter, type ProgressiveKnowledgeEngine } from "../../utils/progressiveKnowledge";
-import { unlockedAppearances } from "../../utils/characters";
+import { currentCharacterStatus, hasEncounteredCharacter, unlockedAppearances } from "../../utils/characters";
+import type { ProgressiveKnowledgeEngine } from "../../utils/progressiveKnowledge";
 import { productions } from "../../data/movies";
 import { CharacterPortrait } from "../CharacterPortrait/CharacterPortrait";
 
