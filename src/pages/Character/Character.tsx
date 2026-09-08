@@ -1,11 +1,13 @@
 import { Link, useParams } from "react-router-dom";
+import { AppearanceCard } from "../../components/AppearanceCard/AppearanceCard";
+import { CharacterPortrait } from "../../components/CharacterPortrait/CharacterPortrait";
 import { characters } from "../../data/characters";
 import { connections } from "../../data/connections";
 import { productions } from "../../data/movies";
-import { CharacterPortrait } from "../../components/CharacterPortrait/CharacterPortrait";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { createProgressiveKnowledge, currentCharacterStatus, hasEncounteredCharacter } from "../../utils/progressiveKnowledge";
+import type { Movie } from "../../types";
 import { unlockedAppearances } from "../../utils/characters";
+import { createProgressiveKnowledge, currentCharacterStatus, hasEncounteredCharacter } from "../../utils/progressiveKnowledge";
 
 export function CharacterPage() {
   const { id } = useParams();
@@ -27,7 +29,7 @@ export function CharacterPage() {
   const firstSeen = productions.find(movie => movie.n === character.firstAppearance);
   const appearances = unlockedAppearances(character, knowledge)
     .map(number => productions.find(movie => movie.n === number))
-    .filter(Boolean);
+    .filter((movie): movie is Movie => Boolean(movie));
   const relationships = connections.filter(connection =>
     knowledge.canReveal(connection[2]) && (connection[0] === character.name || connection[1] === character.name)
   );
@@ -44,7 +46,7 @@ export function CharacterPage() {
         <div className="character-profile-copy dossier-identity">
           <div className="dossier-classification">
             <span>Dossiê S.H.I.E.L.D.</span>
-            <b>clearance level {knowledge.acquiredCount}</b>
+            <b>REGISTRO INTERNO</b>
           </div>
           <h1>{character.name}</h1>
           <div className="dossier-status-block">
@@ -69,12 +71,7 @@ export function CharacterPage() {
       <section className="section dossier-section">
         <div className="section-head"><div className="section-title"><h2>Histórico conhecido</h2><p>Produções confirmadas dentro da sua maratona.</p></div></div>
         <div className="dossier-record-list">
-          {appearances.map(movie => movie ? (
-            <div key={movie.n} className="dossier-record history-record">
-              <span>{String(movie.n).padStart(2, "0")}</span>
-              <div><h4>{movie.t}</h4><p>{movie.type}</p></div>
-            </div>
-          ) : null)}
+          {appearances.map(movie => <AppearanceCard key={movie.n} production={movie} />)}
         </div>
       </section>
 
@@ -92,3 +89,6 @@ export function CharacterPage() {
     </main>
   );
 }
+
+
+
