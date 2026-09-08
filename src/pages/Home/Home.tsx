@@ -7,7 +7,7 @@ import { productions } from "../../data/movies";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { FilterId, TabId } from "../../types";
 import { visible } from "../../utils/mcu";
-import { createProgressiveKnowledge } from "../../utils/progressiveKnowledge";
+import { createProgressiveKnowledge } from "../../engines/progressiveKnowledge";
 import { AchievementCard } from "../../components/AchievementCard/AchievementCard";
 import { CharacterCard } from "../../components/CharacterCard/CharacterCard";
 import { ConnectionGraph } from "../../components/ConnectionGraph/ConnectionGraph";

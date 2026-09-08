@@ -1,6 +1,6 @@
 import type { Character } from "../../types";
-import { currentCharacterImage } from "../../utils/characters";
-import type { ProgressiveKnowledgeEngine } from "../../utils/progressiveKnowledge";
+import { currentCharacterImage } from "../../selectors/characters";
+import type { ProgressiveKnowledgeEngine } from "../../engines/progressiveKnowledge";
 
 interface CharacterPortraitProps {
   character: Character;

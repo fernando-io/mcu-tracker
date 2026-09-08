@@ -1,5 +1,5 @@
 import type { Character, CharacterImage } from "../types";
-import type { ProgressiveKnowledgeEngine } from "./progressiveKnowledge";
+import type { ProgressiveKnowledgeEngine } from "../engines/progressiveKnowledge";
 
 export function hasEncounteredCharacter(character: Character, knowledge: ProgressiveKnowledgeEngine) {
   return knowledge.hasWatchedSome(character.appearances);

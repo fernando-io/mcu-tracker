@@ -79,7 +79,7 @@ export interface Achievement {
   icon: string;
   name: string;
   desc: string;
-  test: (knowledge: import("../utils/progressiveKnowledge").ProgressiveKnowledgeEngine) => boolean;
+  test: (knowledge: import("../engines/progressiveKnowledge").ProgressiveKnowledgeEngine) => boolean;
 }
 
 export type TabId =

@@ -6,9 +6,9 @@ import { characters } from "../../data/characters";
 import { productions } from "../../data/movies";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { Movie } from "../../types";
-import { currentCharacterStatus, hasEncounteredCharacter, unlockedAppearances } from "../../utils/characters";
-import { createProgressiveKnowledge } from "../../utils/progressiveKnowledge";
-import { knownCharacterRelationships } from "../../utils/relationships";
+import { currentCharacterStatus, hasEncounteredCharacter, unlockedAppearances } from "../../selectors/characters";
+import { createProgressiveKnowledge } from "../../engines/progressiveKnowledge";
+import { knownCharacterRelationships } from "../../selectors/relationships";
 
 export function CharacterPage() {
   const { id } = useParams();
