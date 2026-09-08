@@ -1,5 +1,5 @@
 import type { Character } from "../types";
-import { characterAssets } from "./characterAssets";
+import { characterPortrait } from "./characterAssets";
 
 export const characters: Character[] = [
   {
@@ -8,8 +8,12 @@ export const characters: Character[] = [
     firstAppearance: 1,
     appearances: [1, 6, 8, 11, 13, 18, 20],
     images: [
-      { revealedAt: 1, src: characterAssets.steveRogers[1], alt: "Steve Rogers como Capitão América", source: "local: src/assets/characters/steve-rogers/1.webp" },
-      { revealedAt: 20, src: characterAssets.steveRogers[20], alt: "Steve Rogers idoso em Ultimato", source: "local: src/assets/characters/steve-rogers/20.webp" },
+      { revealedAt: 1, src: characterPortrait("steve-rogers", 1), alt: "Steve Rogers - Capitão América: O Primeiro Vingador", source: "local: src/assets/characters/steve-rogers/1.webp" },
+      { revealedAt: 6, src: characterPortrait("steve-rogers", 6), alt: "Steve Rogers - Os Vingadores", source: "local: src/assets/characters/steve-rogers/6.webp" },
+      { revealedAt: 8, src: characterPortrait("steve-rogers", 8), alt: "Steve Rogers - Capitão América: O Soldado Invernal", source: "local: src/assets/characters/steve-rogers/8.webp" },
+      { revealedAt: 13, src: characterPortrait("steve-rogers", 13), alt: "Steve Rogers - Capitão América: Guerra Civil", source: "local: src/assets/characters/steve-rogers/13.webp" },
+      { revealedAt: 18, src: characterPortrait("steve-rogers", 18), alt: "Steve Rogers - Vingadores: Guerra Infinita", source: "local: src/assets/characters/steve-rogers/18.webp" },
+      { revealedAt: 20, src: characterPortrait("steve-rogers", 20), alt: "Steve Rogers - Vingadores: Ultimato", source: "local: src/assets/characters/steve-rogers/20.webp" },
     ],
     updates: [
       { revealedAt: 1, text: "Capitão América. Desperta no mundo moderno após décadas no gelo." },
@@ -24,8 +28,8 @@ export const characters: Character[] = [
     firstAppearance: 1,
     appearances: [1, 8, 13, 14, 18, 20, 23, 35],
     images: [
-      { revealedAt: 1, src: characterAssets.buckyBarnes[1], alt: "Bucky Barnes", source: "local: src/assets/characters/bucky-barnes/1.webp" },
-      { revealedAt: 8, src: characterAssets.buckyBarnes[8], alt: "Bucky Barnes como Soldado Invernal", source: "local: src/assets/characters/bucky-barnes/8.webp" },
+      { revealedAt: 1, src: characterPortrait("bucky-barnes", 1), alt: "Bucky Barnes", source: "local: src/assets/characters/bucky-barnes/1.webp" },
+      { revealedAt: 8, src: characterPortrait("bucky-barnes", 8), alt: "Bucky Barnes como Soldado Invernal", source: "local: src/assets/characters/bucky-barnes/8.webp" },
     ],
     updates: [
       { revealedAt: 1, text: "Melhor amigo de Steve; dado como morto durante a guerra." },
@@ -39,7 +43,7 @@ export const characters: Character[] = [
     firstAppearance: 3,
     appearances: [3, 4, 6, 7, 11, 13, 15, 18, 20],
     images: [
-      { revealedAt: 3, src: characterAssets.tonyStark[3], alt: "Tony Stark como Homem de Ferro", source: "local: src/assets/characters/tony-stark/3.webp" },
+      { revealedAt: 3, src: characterPortrait("tony-stark", 3), alt: "Tony Stark como Homem de Ferro", source: "local: src/assets/characters/tony-stark/3.webp" },
     ],
     updates: [
       { revealedAt: 3, text: "Homem de Ferro; revela publicamente sua identidade." },
@@ -54,7 +58,7 @@ export const characters: Character[] = [
     firstAppearance: 5,
     appearances: [5, 6, 11, 16, 17, 18, 20],
     images: [
-      { revealedAt: 5, src: characterAssets.thor[5], alt: "Thor", source: "local: src/assets/characters/thor/5.webp" },
+      { revealedAt: 5, src: characterPortrait("thor", 5), alt: "Thor", source: "local: src/assets/characters/thor/5.webp" },
     ],
     updates: [
       { revealedAt: 5, text: "Príncipe de Asgard, novamente digno de Mjölnir." },
@@ -68,7 +72,7 @@ export const characters: Character[] = [
     firstAppearance: 5,
     appearances: [5, 6, 17, 18, 21, 29],
     images: [
-      { revealedAt: 5, src: characterAssets.loki[5], alt: "Loki", source: "local: src/assets/characters/loki/5.webp" },
+      { revealedAt: 5, src: characterPortrait("loki", 5), alt: "Loki", source: "local: src/assets/characters/loki/5.webp" },
     ],
     updates: [
       { revealedAt: 5, text: "Irmão adotivo de Thor; tentou tomar o trono de Asgard." },
@@ -84,7 +88,7 @@ export const characters: Character[] = [
     firstAppearance: 4,
     appearances: [4, 6, 8, 11, 13, 18, 20],
     images: [
-      { revealedAt: 4, src: characterAssets.natashaRomanoff[4], alt: "Natasha Romanoff como Viúva Negra", source: "local: src/assets/characters/natasha-romanoff/4.webp" },
+      { revealedAt: 4, src: characterPortrait("natasha-romanoff", 4), alt: "Natasha Romanoff como Viúva Negra", source: "local: src/assets/characters/natasha-romanoff/4.webp" },
     ],
     updates: [
       { revealedAt: 4, text: "Agente da S.H.I.E.L.D. conhecida como Viúva Negra." },
@@ -98,7 +102,7 @@ export const characters: Character[] = [
     firstAppearance: 6,
     appearances: [6, 7, 11, 17, 18, 20, 24],
     images: [
-      { revealedAt: 6, src: characterAssets.bruceBanner[6], alt: "Bruce Banner como Hulk", source: "local: src/assets/characters/bruce-banner/6.webp" },
+      { revealedAt: 6, src: characterPortrait("bruce-banner", 6), alt: "Bruce Banner como Hulk", source: "local: src/assets/characters/bruce-banner/6.webp" },
     ],
     updates: [
       { revealedAt: 6, text: "Hulk e membro fundador dos Vingadores." },
@@ -112,7 +116,7 @@ export const characters: Character[] = [
     firstAppearance: 11,
     appearances: [11, 13, 18, 20, 22, 27],
     images: [
-      { revealedAt: 11, src: characterAssets.wandaMaximoff[11], alt: "Wanda Maximoff", source: "local: src/assets/characters/wanda-maximoff/11.webp" },
+      { revealedAt: 11, src: characterPortrait("wanda-maximoff", 11), alt: "Wanda Maximoff", source: "local: src/assets/characters/wanda-maximoff/11.webp" },
     ],
     updates: [
       { revealedAt: 11, text: "Entra nos Vingadores após enfrentar Ultron." },
@@ -126,8 +130,8 @@ export const characters: Character[] = [
     firstAppearance: 13,
     appearances: [13, 15, 18, 20, 25, 26],
     images: [
-      { revealedAt: 13, src: characterAssets.peterParker[13], alt: "Peter Parker como Homem-Aranha", source: "local: src/assets/characters/peter-parker/13.webp" },
-      { revealedAt: 26, src: characterAssets.peterParker[26], alt: "Peter Parker após Sem Volta Para Casa", source: "local: src/assets/characters/peter-parker/26.webp" },
+      { revealedAt: 13, src: characterPortrait("peter-parker", 13), alt: "Peter Parker como Homem-Aranha", source: "local: src/assets/characters/peter-parker/13.webp" },
+      { revealedAt: 26, src: characterPortrait("peter-parker", 26), alt: "Peter Parker após Sem Volta Para Casa", source: "local: src/assets/characters/peter-parker/26.webp" },
     ],
     updates: [
       { revealedAt: 13, text: "Homem-Aranha recrutado por Tony Stark." },
@@ -142,7 +146,7 @@ export const characters: Character[] = [
     firstAppearance: 16,
     appearances: [16, 17, 18, 20, 26, 27],
     images: [
-      { revealedAt: 16, src: characterAssets.stephenStrange[16], alt: "Stephen Strange como Doutor Estranho", source: "local: src/assets/characters/stephen-strange/16.webp" },
+      { revealedAt: 16, src: characterPortrait("stephen-strange", 16), alt: "Stephen Strange como Doutor Estranho", source: "local: src/assets/characters/stephen-strange/16.webp" },
     ],
     updates: [
       { revealedAt: 16, text: "Mestre das artes místicas; protege a Terra de ameaças dimensionais." },
@@ -156,7 +160,7 @@ export const characters: Character[] = [
     firstAppearance: 8,
     appearances: [8, 12, 13, 18, 20, 23, 34],
     images: [
-      { revealedAt: 8, src: characterAssets.samWilson[8], alt: "Sam Wilson como Falcão", source: "local: src/assets/characters/sam-wilson/8.webp" },
+      { revealedAt: 8, src: characterPortrait("sam-wilson", 8), alt: "Sam Wilson como Falcão", source: "local: src/assets/characters/sam-wilson/8.webp" },
     ],
     updates: [
       { revealedAt: 8, text: "Aliado de Steve conhecido como Falcão." },
@@ -171,7 +175,7 @@ export const characters: Character[] = [
     firstAppearance: 12,
     appearances: [12, 13, 19, 20, 31],
     images: [
-      { revealedAt: 12, src: characterAssets.scottLang[12], alt: "Scott Lang como Homem-Formiga", source: "local: src/assets/characters/scott-lang/12.webp" },
+      { revealedAt: 12, src: characterPortrait("scott-lang", 12), alt: "Scott Lang como Homem-Formiga", source: "local: src/assets/characters/scott-lang/12.webp" },
     ],
     updates: [
       { revealedAt: 12, text: "Assume o traje do Homem-Formiga e retorna do Reino Quântico." },
@@ -186,7 +190,7 @@ export const characters: Character[] = [
     firstAppearance: 2,
     appearances: [2, 20, 24, 28],
     images: [
-      { revealedAt: 2, src: characterAssets.carolDanvers[2], alt: "Carol Danvers como Capitã Marvel", source: "local: src/assets/characters/carol-danvers/2.webp" },
+      { revealedAt: 2, src: characterPortrait("carol-danvers", 2), alt: "Carol Danvers como Capitã Marvel", source: "local: src/assets/characters/carol-danvers/2.webp" },
     ],
     updates: [
       { revealedAt: 2, text: "Descobre sua origem humana e deixa a Terra para ajudar os Skrulls." },
@@ -200,7 +204,7 @@ export const characters: Character[] = [
     firstAppearance: 33,
     appearances: [33, 37],
     images: [
-      { revealedAt: 27, src: characterAssets.wilsonFisk[27], alt: "Wilson Fisk", source: "local: src/assets/characters/wilson-fisk/27.webp" },
+      { revealedAt: 33, src: characterPortrait("wilson-fisk", 33), alt: "Wilson Fisk", source: "local: src/assets/characters/wilson-fisk/33.webp" },
     ],
     updates: [
       { revealedAt: 27, text: "Reaparece como figura central do submundo de Nova York." },
@@ -209,4 +213,6 @@ export const characters: Character[] = [
     ],
   },
 ];
+
+
 

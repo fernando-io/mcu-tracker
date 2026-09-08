@@ -1,47 +1,9 @@
-export const characterAssets = {
-  steveRogers: {
-    1: "",
-    20: "",
-  },
-  buckyBarnes: {
-    1: "",
-    8: "",
-  },
-  tonyStark: {
-    3: "",
-  },
-  thor: {
-    5: "",
-  },
-  loki: {
-    5: "",
-  },
-  natashaRomanoff: {
-    4: "",
-  },
-  bruceBanner: {
-    6: "",
-  },
-  wandaMaximoff: {
-    11: "",
-  },
-  peterParker: {
-    13: "",
-    26: "",
-  },
-  stephenStrange: {
-    16: "",
-  },
-  samWilson: {
-    8: "",
-  },
-  scottLang: {
-    12: "",
-  },
-  carolDanvers: {
-    2: "",
-  },
-  wilsonFisk: {
-    27: "",
-  },
-};
+const characterPortraits = import.meta.glob<string>("../assets/characters/**/*.webp", {
+  eager: true,
+  query: "?url",
+  import: "default",
+});
+
+export function characterPortrait(characterId: string, revealedAt: number) {
+  return characterPortraits[`../assets/characters/${characterId}/${revealedAt}.webp`] || "";
+}
