@@ -4,7 +4,7 @@ interface HeroProps {
   pct: number;
   seen: number;
   releasedTotal: number;
-  knowledgeLevel: number;
+  acquiredKnowledgeCount: number;
   essentialLeft: number;
   ratedCount: number;
   futureCount: number;
@@ -24,3 +24,4 @@ export function Hero(props: HeroProps) {
     </section>
   );
 }
+

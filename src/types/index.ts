@@ -13,11 +13,15 @@ export interface Movie {
 export interface Character {
   id: string;
   name: string;
-  firstSeen: number;
+  firstAppearance: number;
   images: CharacterImage[];
   appearances: number[];
+  updates: CharacterUpdate[];
+}
+
+export interface CharacterUpdate {
   revealedAt: number;
-  updates: [number, string][];
+  text: string;
 }
 
 export interface CharacterImage {
@@ -25,6 +29,30 @@ export interface CharacterImage {
   src: string;
   alt?: string;
   source?: string;
+}
+
+export enum RelationshipTargetType {
+  Character = "Character",
+  Organization = "Organization",
+}
+
+export enum RelationshipType {
+  Ally = "ALLY",
+  Enemy = "ENEMY",
+  Member = "MEMBER",
+  Family = "FAMILY",
+  Mentor = "MENTOR",
+  Rival = "RIVAL",
+  Leader = "LEADER",
+  Subordinate = "SUBORDINATE",
+}
+
+export interface CharacterRelationship {
+  characterId: string;
+  revealedAt: number;
+  targetType: RelationshipTargetType;
+  targetId: string;
+  type: RelationshipType;
 }
 
 export type Connection = [string, string, number, string];
@@ -51,7 +79,7 @@ export interface Achievement {
   icon: string;
   name: string;
   desc: string;
-  test: (watched: Set<number>) => boolean;
+  test: (knowledge: import("../utils/progressiveKnowledge").ProgressiveKnowledgeEngine) => boolean;
 }
 
 export type TabId =

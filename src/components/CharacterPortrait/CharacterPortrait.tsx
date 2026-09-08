@@ -1,18 +1,20 @@
 import type { Character } from "../../types";
 import { currentCharacterImage } from "../../utils/characters";
+import type { ProgressiveKnowledgeEngine } from "../../utils/progressiveKnowledge";
 
 interface CharacterPortraitProps {
   character: Character;
-  knowledgeLevel: number;
+  knowledge: ProgressiveKnowledgeEngine;
 }
 
-export function CharacterPortrait({ character, knowledgeLevel }: CharacterPortraitProps) {
-  const image = currentCharacterImage(character, knowledgeLevel);
+export function CharacterPortrait({ character, knowledge }: CharacterPortraitProps) {
+  const image = currentCharacterImage(character, knowledge);
 
   if (!image || !image.src) {
     return (
       <div className="character-portrait asset-pending">
-        <span>Asset pendente</span>
+        <span>CLASSIFIED</span>
+        <b>Retrato indisponível</b>
       </div>
     );
   }
