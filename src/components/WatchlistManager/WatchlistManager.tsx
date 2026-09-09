@@ -13,6 +13,7 @@ interface WatchlistManagerProps {
   onActivate: (watchlistId: Watchlist["id"]) => void;
   onCreate: (input: CustomWatchlistInput) => void;
   onUpdate: (watchlistId: Watchlist["id"], details: Pick<Watchlist, "name" | "description">) => void;
+  onDuplicate: (watchlistId: Watchlist["id"]) => void;
   onDelete: (watchlistId: Watchlist["id"]) => void;
   onAddProductions: (watchlistId: Watchlist["id"], productionIds: readonly WatchlistProductionId[]) => void;
   onRemoveProductions: (watchlistId: Watchlist["id"], productionIds: readonly WatchlistProductionId[]) => void;
@@ -27,6 +28,7 @@ export function WatchlistManager({
   onActivate,
   onCreate,
   onUpdate,
+  onDuplicate,
   onDelete,
   onAddProductions,
   onRemoveProductions,
@@ -94,6 +96,7 @@ export function WatchlistManager({
 
         {isCustomWatchlist && (
           <div className="watchlist-actions" aria-label="Ações da lista">
+            <button className="btn" type="button" onClick={() => onDuplicate(activeWatchlist.id)}>Duplicar</button>
             <button className="btn" type="button" onClick={() => setDialog("manage")}>Gerenciar</button>
             <button className="btn red" type="button" onClick={() => setDialog("delete")}>Excluir</button>
           </div>

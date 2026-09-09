@@ -4,6 +4,7 @@ import {
   addProductionsToCustomWatchlist,
   createCustomWatchlist,
   deleteCustomWatchlist,
+  duplicateCustomWatchlist,
   removeProductionsFromCustomWatchlist,
   reorderCustomWatchlistProductions,
   searchWatchlistProductions,
@@ -41,6 +42,7 @@ export interface CustomWatchlistActions {
   customWatchlists: Watchlist[];
   createWatchlist: (input: CustomWatchlistInput) => void;
   updateWatchlist: (watchlistId: Watchlist["id"], details: Pick<Watchlist, "name" | "description">) => void;
+  duplicateWatchlist: (watchlistId: Watchlist["id"]) => void;
   deleteWatchlist: (watchlistId: Watchlist["id"]) => void;
   addProductions: (watchlistId: Watchlist["id"], productionIds: readonly WatchlistProductionId[]) => void;
   removeProductions: (watchlistId: Watchlist["id"], productionIds: readonly WatchlistProductionId[]) => void;
@@ -66,6 +68,13 @@ export function useCustomWatchlists(): CustomWatchlistActions {
     setCustomWatchlists(currentWatchlists => updateCustomWatchlists(
       currentWatchlists,
       watchlists => updateCustomWatchlistDetails(watchlists, watchlistId, details),
+    ));
+  }, []);
+
+  const duplicateWatchlist = useCallback((watchlistId: Watchlist["id"]) => {
+    setCustomWatchlists(currentWatchlists => updateCustomWatchlists(
+      currentWatchlists,
+      watchlists => duplicateCustomWatchlist(watchlists, watchlistId),
     ));
   }, []);
 
@@ -106,6 +115,7 @@ export function useCustomWatchlists(): CustomWatchlistActions {
     customWatchlists,
     createWatchlist,
     updateWatchlist,
+    duplicateWatchlist,
     deleteWatchlist,
     addProductions,
     removeProductions,
