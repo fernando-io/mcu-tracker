@@ -62,8 +62,8 @@ export function getWatchlistProgressSummary(
   return {
     totalProductions,
     completedProductions,
-    remainingProductions: totalProductions - completedProductions,
-    completionPercentage: totalProductions === 0 ? 0 : Math.round((completedProductions / totalProductions) * 100),
+    remainingProductions: getWatchlistRemainingProductions(productionsApi, isCompleted),
+    completionPercentage: getWatchlistCompletionPercentage(productionsApi, isCompleted),
     firstProduction: getWatchlistFirstProduction(productionsApi),
     lastProduction: getWatchlistLastProduction(productionsApi),
   };

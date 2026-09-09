@@ -1,24 +1,14 @@
-import { characters } from "../../data/characters";
-import { organizationLabels, relationshipLabels } from "../../data/characterRelationships";
-import { RelationshipTargetType, type CharacterRelationship } from "../../types";
+import type { RelationshipRecordViewModel } from "../../viewModels/characters";
 
 interface RelationshipRecordProps {
-  relationship: CharacterRelationship;
+  model: RelationshipRecordViewModel;
 }
 
-function targetName(relationship: CharacterRelationship) {
-  if (relationship.targetType === RelationshipTargetType.Organization) {
-    return organizationLabels[relationship.targetId] || relationship.targetId;
-  }
-
-  return characters.find(character => character.id === relationship.targetId)?.name || relationship.targetId;
-}
-
-export function RelationshipRecord({ relationship }: RelationshipRecordProps) {
+export function RelationshipRecord({ model }: RelationshipRecordProps) {
   return (
     <div className="dossier-record relationship-record intel-link">
       <span>INT</span>
-      <div><h4>{targetName(relationship)}</h4><p>{relationshipLabels[relationship.type]}</p></div>
+      <div><h4>{model.targetName}</h4><p>{model.relationshipLabel}</p></div>
     </div>
   );
 }

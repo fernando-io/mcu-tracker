@@ -1,36 +1,29 @@
-import type { Movie } from "../types";
 import { defaultWatchlist } from "../watchlists/defaultWatchlist";
 import { officialWatchlists } from "../watchlists/officialWatchlists";
 import type { Watchlist } from "../watchlists/watchlist.types";
-import { createActiveWatchlist, type ActiveWatchlist } from "./activeWatchlist";
-import type { IsProductionCompleted } from "./watchlistProgress";
 
 export interface ActiveWatchlistStateOptions {
-  productionCatalog: readonly Movie[];
-  isCompleted: IsProductionCompleted;
   watchlists?: readonly Watchlist[];
   initialWatchlistId?: Watchlist["id"];
 }
 
 export interface ActiveWatchlistState {
-  getActiveWatchlist: () => ActiveWatchlist;
-  setActiveWatchlist: (watchlistId: Watchlist["id"]) => ActiveWatchlist;
+  getActiveWatchlist: () => Watchlist;
+  setActiveWatchlist: (watchlistId: Watchlist["id"]) => Watchlist;
 }
 
 export function createActiveWatchlistState({
-  productionCatalog,
-  isCompleted,
   watchlists = officialWatchlists,
   initialWatchlistId,
-}: ActiveWatchlistStateOptions): ActiveWatchlistState {
+}: ActiveWatchlistStateOptions = {}): ActiveWatchlistState {
   const watchlistsById = new Map(watchlists.map(watchlist => [watchlist.id, watchlist]));
+  const fallbackWatchlist = watchlistsById.get(defaultWatchlist.id);
 
-  if (!watchlistsById.has(defaultWatchlist.id)) {
+  if (!fallbackWatchlist) {
     throw new Error("A watchlist padrão precisa estar disponível.");
   }
 
-  const initialWatchlist = watchlistsById.get(initialWatchlistId ?? defaultWatchlist.id) ?? defaultWatchlist;
-  let activeWatchlist = createActiveWatchlist(initialWatchlist, productionCatalog, isCompleted);
+  let activeWatchlist = watchlistsById.get(initialWatchlistId ?? fallbackWatchlist.id) ?? fallbackWatchlist;
 
   return {
     getActiveWatchlist: () => activeWatchlist,
@@ -41,7 +34,7 @@ export function createActiveWatchlistState({
         throw new Error(`Watchlist não encontrada: ${watchlistId}`);
       }
 
-      activeWatchlist = createActiveWatchlist(watchlist, productionCatalog, isCompleted);
+      activeWatchlist = watchlist;
       return activeWatchlist;
     },
   };

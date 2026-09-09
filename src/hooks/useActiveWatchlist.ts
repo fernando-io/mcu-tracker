@@ -1,15 +1,14 @@
 import { useMemo } from "react";
 import { productions } from "../data/movies";
-import type { ActiveWatchlist } from "../engines/activeWatchlist";
-import { createPersistentActiveWatchlistState } from "../watchlists";
+import { createActiveWatchlist, type ActiveWatchlist } from "../engines/activeWatchlist";
+import { createPersistentActiveWatchlistState } from "../state";
 
 export function useActiveWatchlist(watched: ReadonlySet<number>): ActiveWatchlist {
-  return useMemo(() => {
-    const activeWatchlistState = createPersistentActiveWatchlistState({
-      productionCatalog: productions,
-      isCompleted: productionId => watched.has(productionId),
-    });
+  const activeWatchlistState = useMemo(() => createPersistentActiveWatchlistState(), []);
+  const selectedWatchlist = activeWatchlistState.getActiveWatchlist();
 
-    return activeWatchlistState.getActiveWatchlist();
-  }, [watched]);
+  return useMemo(
+    () => createActiveWatchlist(selectedWatchlist, productions, productionId => watched.has(productionId)),
+    [selectedWatchlist, watched],
+  );
 }
