@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { achievements } from "../../data/achievements";
 import { characters } from "../../data/characters";
 import { connections, knowledge as knowledgeEntries, universeStates } from "../../data/connections";
-import { productions } from "../../data/movies";
+import { useActiveWatchlist } from "../../hooks/useActiveWatchlist";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { FilterId, TabId } from "../../types";
 import { visible } from "../../utils/mcu";
@@ -25,20 +25,22 @@ export function Home() {
 
   const watched = useMemo(() => new Set(state.watched || []), [state.watched]);
   const progressiveKnowledge = useMemo(() => createProgressiveKnowledge(watched), [watched]);
-  const released = useMemo(() => productions.filter(movie => movie.p !== "future"), []);
+  const activeWatchlist = useActiveWatchlist(watched);
+  const watchlistProductions = useMemo(() => activeWatchlist.getProductions(), [activeWatchlist]);
+  const released = useMemo(() => watchlistProductions.filter(movie => movie.p !== "future"), [watchlistProductions]);
   const seen = useMemo(() => released.filter(movie => watched.has(movie.n)).length, [released, watched]);
   const pct = Math.round(seen / released.length * 100) || 0;
-  const filteredSections = useMemo(() => [...new Set(productions.map(movie => movie.s))]
+  const filteredSections = useMemo(() => [...new Set(watchlistProductions.map(movie => movie.s))]
     .map(name => ({
       name,
-      movies: productions.filter(movie => movie.s === name && visible(movie, query.trim().toLowerCase(), filter, watched)),
+      movies: watchlistProductions.filter(movie => movie.s === name && visible(movie, query.trim().toLowerCase(), filter, watched)),
     }))
-    .filter(section => section.movies.length), [filter, query, watched]);
+    .filter(section => section.movies.length), [filter, query, watched, watchlistProductions]);
   const knownKnowledge = knowledgeEntries.filter(entry => progressiveKnowledge.canReveal(entry));
   const futureKnowledge = knowledgeEntries.filter(entry => !progressiveKnowledge.canReveal(entry)).slice(0, 5);
   const visibleConnections = connections.filter(connection => progressiveKnowledge.canReveal(connection[2]));
   const latestUniverseStates = Object.values(Object.fromEntries(universeStates.filter(state => progressiveKnowledge.canReveal(state)).map(state => [state.title, state])));
-  const ratedMovies = productions
+  const ratedMovies = watchlistProductions
     .filter(movie => state.ratings[movie.n] > 0)
     .sort((a, b) => (state.ratings[b.n] - state.ratings[a.n]) || (a.n - b.n));
 
@@ -92,9 +94,9 @@ export function Home() {
           seen={seen}
           releasedTotal={released.length}
           acquiredKnowledgeCount={progressiveKnowledge.acquiredCount}
-          essentialLeft={productions.filter(movie => movie.p === "essential" && !watched.has(movie.n)).length}
-          ratedCount={Object.keys(state.ratings).filter(key => state.ratings[Number(key)] > 0).length}
-          futureCount={productions.filter(movie => movie.p === "future").length}
+          essentialLeft={watchlistProductions.filter(movie => movie.p === "essential" && !watched.has(movie.n)).length}
+          ratedCount={watchlistProductions.filter(movie => state.ratings[movie.n] > 0).length}
+          futureCount={watchlistProductions.filter(movie => movie.p === "future").length}
         />
         <Tabs activeTab={activeTab} onChange={changeTab} />
 
@@ -112,7 +114,7 @@ export function Home() {
             <input className="search" placeholder="Buscar filme ou série..." value={query} onChange={event => setQuery(event.target.value)} />
           </div>
           {filteredSections.length ? filteredSections.map(section => (
-            <MovieGrid key={section.name} sectionName={section.name} movies={section.movies} allMovies={productions} watched={watched} ratings={state.ratings} notes={state.notes} onToggleWatched={updateWatched} onRate={updateRating} onNoteChange={updateNote} />
+            <MovieGrid key={section.name} sectionName={section.name} movies={section.movies} allMovies={watchlistProductions} watched={watched} ratings={state.ratings} notes={state.notes} onToggleWatched={updateWatched} onRate={updateRating} onNoteChange={updateNote} />
           )) : <div className="empty">Nenhuma produção encontrada.</div>}
         </section>
 
