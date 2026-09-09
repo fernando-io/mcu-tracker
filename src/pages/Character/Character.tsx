@@ -13,7 +13,7 @@ export function CharacterPage() {
   if (!dossier) {
     return (
       <main className="wrap character-page">
-        <Link className="back-link" to="/?tab=arquivo">Voltar para Database</Link>
+        <Link className="back-link" to="/characters">Voltar para Database</Link>
         <div className="empty">Arquivo classificado ou inexistente.</div>
       </main>
     );
@@ -21,7 +21,7 @@ export function CharacterPage() {
 
   return (
     <main className="wrap character-page dossier-page">
-      <Link className="back-link dossier-back" to="/?tab=arquivo">Voltar para Database</Link>
+      <Link className="back-link dossier-back" to="/characters">Voltar para Database</Link>
 
       <section className="card character-profile dossier-hero">
         <div className="dossier-portrait-frame">
