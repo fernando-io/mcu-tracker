@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHomeViewModel } from "../../hooks/useHomeViewModel";
+import { useCustomWatchlists } from "../../hooks/useCustomWatchlists";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { FilterId, TabId } from "../../types";
+import { officialWatchlists } from "../../watchlists";
 import { AchievementCard } from "../../components/AchievementCard/AchievementCard";
 import { CharacterCard } from "../../components/CharacterCard/CharacterCard";
 import { ConnectionGraph } from "../../components/ConnectionGraph/ConnectionGraph";
@@ -10,6 +12,7 @@ import { Header } from "../../components/Header/Header";
 import { Hero } from "../../components/Hero/Hero";
 import { MovieGrid } from "../../components/MovieGrid/MovieGrid";
 import { Tabs } from "../../components/Tabs/Tabs";
+import { WatchlistManager } from "../../components/WatchlistManager/WatchlistManager";
 
 export function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,7 +20,18 @@ export function Home() {
   const [activeTab, setActiveTab] = useState<TabId>("maratona");
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
-  const home = useHomeViewModel({ progressState: state, filter, query });
+  const {
+    customWatchlists,
+    createWatchlist,
+    updateWatchlist,
+    deleteWatchlist,
+    addProductions,
+    removeProductions,
+    reorderProductions,
+    searchAvailableProductions,
+  } = useCustomWatchlists();
+  const watchlists = useMemo(() => [...officialWatchlists, ...customWatchlists], [customWatchlists]);
+  const home = useHomeViewModel({ progressState: state, filter, query, watchlists });
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -65,6 +79,19 @@ export function Home() {
       <Header onExport={exportProgress} onReset={reset} />
       <main className="wrap">
         <Hero {...home.hero} />
+        <WatchlistManager
+          watchlists={watchlists}
+          activeWatchlist={home.activeWatchlist.watchlist}
+          activeProductions={home.watchlistProductions}
+          onActivate={home.activateWatchlist}
+          onCreate={createWatchlist}
+          onUpdate={updateWatchlist}
+          onAddProductions={addProductions}
+          onRemoveProductions={removeProductions}
+          onReorderProductions={reorderProductions}
+          onSearchAvailableProductions={searchAvailableProductions}
+          onDelete={deleteWatchlist}
+        />
         <Tabs activeTab={activeTab} onChange={changeTab} />
 
         <section className={`panel ${activeTab === "maratona" ? "active" : ""}`}>

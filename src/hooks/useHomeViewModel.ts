@@ -4,6 +4,7 @@ import { connections, knowledge as knowledgeEntries, universeStates } from "../d
 import { productions } from "../data/movies";
 import { isAchievementUnlocked } from "../engines/achievementRules";
 import type { FilterId, ProgressState } from "../types";
+import type { Watchlist } from "../watchlists";
 import { visible } from "../utils/mcu";
 import { useActiveWatchlist } from "./useActiveWatchlist";
 import { useCharacterCardModels } from "./useCharacterCardModels";
@@ -13,13 +14,14 @@ interface UseHomeViewModelOptions {
   progressState: ProgressState;
   filter: FilterId;
   query: string;
+  watchlists: readonly Watchlist[];
 }
 
-export function useHomeViewModel({ progressState, filter, query }: UseHomeViewModelOptions) {
+export function useHomeViewModel({ progressState, filter, query, watchlists }: UseHomeViewModelOptions) {
   const watched = useMemo(() => new Set(progressState.watched || []), [progressState.watched]);
   const progressiveKnowledge = useProgressiveKnowledge(watched);
   const characterCardModels = useCharacterCardModels(progressiveKnowledge);
-  const { activeWatchlist } = useActiveWatchlist(watched);
+  const { activeWatchlist, activateWatchlist } = useActiveWatchlist(watched, { watchlists });
   const watchlistProductions = useMemo(() => activeWatchlist.getProductions(), [activeWatchlist]);
   const released = useMemo(() => watchlistProductions.filter(movie => movie.p !== "future"), [watchlistProductions]);
   const seen = useMemo(() => released.filter(movie => watched.has(movie.n)).length, [released, watched]);
@@ -35,6 +37,8 @@ export function useHomeViewModel({ progressState, filter, query }: UseHomeViewMo
 
   return {
     watched,
+    activeWatchlist,
+    activateWatchlist,
     hero: {
       pct: Math.round(seen / released.length * 100) || 0,
       seen,

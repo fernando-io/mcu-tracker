@@ -59,7 +59,7 @@ function createCustomWatchlistRecord(
   };
 }
 
-function updateCustomWatchlist(
+function mapCustomWatchlist(
   watchlists: readonly Watchlist[],
   watchlistId: string,
   update: (watchlist: Watchlist) => Watchlist,
@@ -104,12 +104,20 @@ export function createCustomWatchlist(
   return [...watchlists, createCustomWatchlistRecord(watchlists, input, createId)];
 }
 
+export function updateCustomWatchlistDetails(
+  watchlists: readonly Watchlist[],
+  watchlistId: string,
+  details: Pick<Watchlist, "name" | "description">,
+): Watchlist[] {
+  return mapCustomWatchlist(watchlists, watchlistId, watchlist => ({ ...watchlist, ...details }));
+}
+
 export function renameCustomWatchlist(
   watchlists: readonly Watchlist[],
   watchlistId: string,
   name: string,
 ): Watchlist[] {
-  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({ ...watchlist, name }));
+  return mapCustomWatchlist(watchlists, watchlistId, watchlist => ({ ...watchlist, name }));
 }
 
 export function duplicateCustomWatchlist(
@@ -140,7 +148,7 @@ export function addProductionsToCustomWatchlist(
   watchlistId: string,
   productionIds: readonly WatchlistProductionId[],
 ): Watchlist[] {
-  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({
+  return mapCustomWatchlist(watchlists, watchlistId, watchlist => ({
     ...watchlist,
     productions: uniqueProductionIds([...watchlist.productions, ...productionIds]),
   }));
@@ -153,7 +161,7 @@ export function removeProductionsFromCustomWatchlist(
 ): Watchlist[] {
   const productionIdsToRemove = new Set(productionIds);
 
-  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({
+  return mapCustomWatchlist(watchlists, watchlistId, watchlist => ({
     ...watchlist,
     productions: watchlist.productions.filter(productionId => !productionIdsToRemove.has(productionId)),
   }));
@@ -164,7 +172,7 @@ export function reorderCustomWatchlistProductions(
   watchlistId: string,
   productionIds: readonly WatchlistProductionId[],
 ): Watchlist[] {
-  return updateCustomWatchlist(watchlists, watchlistId, watchlist => {
+  return mapCustomWatchlist(watchlists, watchlistId, watchlist => {
     assertReorderedProductions(watchlist.productions, productionIds);
 
     return {
