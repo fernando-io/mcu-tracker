@@ -19,7 +19,7 @@ export function useHomeViewModel({ progressState, filter, query }: UseHomeViewMo
   const watched = useMemo(() => new Set(progressState.watched || []), [progressState.watched]);
   const progressiveKnowledge = useProgressiveKnowledge(watched);
   const characterCardModels = useCharacterCardModels(progressiveKnowledge);
-  const activeWatchlist = useActiveWatchlist(watched);
+  const { activeWatchlist } = useActiveWatchlist(watched);
   const watchlistProductions = useMemo(() => activeWatchlist.getProductions(), [activeWatchlist]);
   const released = useMemo(() => watchlistProductions.filter(movie => movie.p !== "future"), [watchlistProductions]);
   const seen = useMemo(() => released.filter(movie => watched.has(movie.n)).length, [released, watched]);
