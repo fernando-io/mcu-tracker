@@ -31,3 +31,8 @@ pnpm-debug.log*
 # generated config declarations
 vite.config.js
 vite.config.d.ts
+
+# firebase
+.firebase/
+.firebaserc
+firebase.json
