@@ -3,12 +3,12 @@ import { AppearanceCard } from "../../components/AppearanceCard/AppearanceCard";
 import { CharacterPortrait } from "../../components/CharacterPortrait/CharacterPortrait";
 import { RelationshipRecord } from "../../components/RelationshipRecord/RelationshipRecord";
 import { useCharacterDossier } from "../../hooks/useCharacterDossier";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { useWatchlistJourney } from "../../hooks/useWatchlistJourney";
 
 export function CharacterPage() {
   const { id } = useParams();
-  const [state] = useLocalStorage();
-  const dossier = useCharacterDossier(id, state.watched || []);
+  const journey = useWatchlistJourney();
+  const dossier = useCharacterDossier(id, journey.watched);
 
   if (!dossier) {
     return (

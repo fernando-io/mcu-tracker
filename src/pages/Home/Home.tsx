@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useHomeViewModel } from "../../hooks/useHomeViewModel";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 import type { FilterId, TabId } from "../../types";
+import { EMPTY_PROGRESS_STATE } from "../../state/watchlistProgressPersistence";
 import { AchievementCard } from "../../components/AchievementCard/AchievementCard";
 import { CharacterCard } from "../../components/CharacterCard/CharacterCard";
 import { ConnectionGraph } from "../../components/ConnectionGraph/ConnectionGraph";
@@ -10,14 +10,14 @@ import { Header } from "../../components/Header/Header";
 import { Hero } from "../../components/Hero/Hero";
 import { MovieGrid } from "../../components/MovieGrid/MovieGrid";
 import { Tabs } from "../../components/Tabs/Tabs";
+import { WatchlistManager } from "../../components/WatchlistManager/WatchlistManager";
 
 export function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [state, setState] = useLocalStorage();
   const [activeTab, setActiveTab] = useState<TabId>("maratona");
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
-  const home = useHomeViewModel({ progressState: state, filter, query });
+  const home = useHomeViewModel({ filter, query });
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -30,33 +30,41 @@ export function Home() {
   }
 
   function updateWatched(movieNumber: number, isWatched: boolean) {
-    const next = new Set(home.watched);
-    if (isWatched) next.add(movieNumber);
-    else next.delete(movieNumber);
-    setState(prev => ({ ...prev, watched: [...next] }));
+    home.updateActiveProgress(progressState => {
+      const watched = new Set(progressState.watched);
+      if (isWatched) watched.add(movieNumber);
+      else watched.delete(movieNumber);
+      return { ...progressState, watched: [...watched] };
+    });
   }
 
   function updateRating(movieNumber: number, score: number) {
-    setState(prev => ({ ...prev, ratings: { ...prev.ratings, [movieNumber]: score } }));
+    home.updateActiveProgress(progressState => ({
+      ...progressState,
+      ratings: { ...progressState.ratings, [movieNumber]: score },
+    }));
   }
 
   function updateNote(movieNumber: number, note: string) {
-    setState(prev => ({ ...prev, notes: { ...prev.notes, [movieNumber]: note } }));
+    home.updateActiveProgress(progressState => ({
+      ...progressState,
+      notes: { ...progressState.notes, [movieNumber]: note },
+    }));
   }
 
   function reset() {
-    if (confirm("Apagar progresso, notas e avaliações?")) {
-      setState({ watched: [], ratings: {}, notes: {} });
+    if (confirm("Apagar progresso, notas e avaliações desta jornada?")) {
+      home.updateActiveProgress(() => ({ ...EMPTY_PROGRESS_STATE, watched: [], ratings: {}, notes: {} }));
     }
   }
 
   function exportProgress() {
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(home.progressState, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "mcu-progresso.json";
-    a.click();
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "mcu-progresso.json";
+    anchor.click();
     URL.revokeObjectURL(url);
   }
 
@@ -65,6 +73,20 @@ export function Home() {
       <Header onExport={exportProgress} onReset={reset} />
       <main className="wrap">
         <Hero {...home.hero} />
+        <WatchlistManager
+          watchlists={home.watchlists}
+          activeWatchlist={home.activeWatchlist.watchlist}
+          activeProductions={home.watchlistProductions}
+          onActivate={home.activateWatchlist}
+          onCreate={home.createWatchlist}
+          onUpdate={home.updateWatchlist}
+          onDuplicate={home.duplicateWatchlist}
+          onAddProductions={home.addProductions}
+          onRemoveProductions={home.removeProductions}
+          onReorderProductions={home.reorderProductions}
+          onSearchAvailableProductions={home.searchAvailableProductions}
+          onDelete={home.deleteWatchlist}
+        />
         <Tabs activeTab={activeTab} onChange={changeTab} />
 
         <section className={`panel ${activeTab === "maratona" ? "active" : ""}`}>
@@ -81,7 +103,7 @@ export function Home() {
             <input className="search" placeholder="Buscar filme ou série..." value={query} onChange={event => setQuery(event.target.value)} />
           </div>
           {home.filteredSections.length ? home.filteredSections.map(section => (
-            <MovieGrid key={section.name} sectionName={section.name} movies={section.movies} allMovies={home.watchlistProductions} watched={home.watched} ratings={state.ratings} notes={state.notes} onToggleWatched={updateWatched} onRate={updateRating} onNoteChange={updateNote} />
+            <MovieGrid key={section.name} sectionName={section.name} movies={section.movies} allMovies={home.watchlistProductions} watched={home.watched} ratings={home.progressState.ratings} notes={home.progressState.notes} onToggleWatched={updateWatched} onRate={updateRating} onNoteChange={updateNote} />
           )) : <div className="empty">Nenhuma produção encontrada.</div>}
         </section>
 
@@ -125,7 +147,7 @@ export function Home() {
         <section className={`panel ${activeTab === "ranking" ? "active" : ""}`}>
           <div className="card ranking">
             <div className="section-head"><div className="section-title"><h2>Meu ranking do MCU</h2><p>Ordenado pelas suas próprias notas.</p></div><div className="count">{home.ratedMovies.length} avaliados</div></div>
-            {home.ratedMovies.length ? home.ratedMovies.map((movie, index) => <div key={movie.n} className="rank-row"><div className="rank-pos">#{index + 1}</div><div className="rank-title">{movie.t}</div><div className="rank-score">{"★".repeat(state.ratings[movie.n])}</div></div>) : <div className="empty">Dê uma nota após assistir para montar seu ranking.</div>}
+            {home.ratedMovies.length ? home.ratedMovies.map((movie, index) => <div key={movie.n} className="rank-row"><div className="rank-pos">#{index + 1}</div><div className="rank-title">{movie.t}</div><div className="rank-score">{"★".repeat(home.progressState.ratings[movie.n])}</div></div>) : <div className="empty">Dê uma nota após assistir para montar seu ranking.</div>}
           </div>
         </section>
 

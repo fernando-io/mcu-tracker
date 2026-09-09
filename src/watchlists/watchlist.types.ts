@@ -9,3 +9,9 @@ export interface Watchlist {
   kind: WatchlistKind;
   productions: readonly WatchlistProductionId[];
 }
+
+export interface CustomWatchlistInput {
+  name: string;
+  description: string;
+  productions?: readonly WatchlistProductionId[];
+}

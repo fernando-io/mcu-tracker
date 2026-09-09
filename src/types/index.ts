@@ -75,6 +75,8 @@ export interface ProgressState {
   notes: Record<number, string>;
 }
 
+export type WatchlistProgress = Record<string, ProgressState>;
+
 export type AchievementRule =
   | { type: "productions"; productionIds: number[] }
   | { type: "catalog"; priority?: Priority; releasedOnly?: boolean };
