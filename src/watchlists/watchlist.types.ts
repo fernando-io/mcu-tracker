@@ -7,5 +7,5 @@ export interface Watchlist {
   name: string;
   description: string;
   kind: WatchlistKind;
-  productions: WatchlistProductionId[];
+  productions: readonly WatchlistProductionId[];
 }
