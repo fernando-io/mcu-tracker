@@ -1,4 +1,6 @@
-import type { CustomWatchlistInput, Watchlist } from "../watchlists";
+import type { Movie } from "../types";
+import { createProductionRetrievalApi } from "./productionRetrieval";
+import type { CustomWatchlistInput, Watchlist, WatchlistProductionId } from "../watchlists";
 
 export type CustomWatchlistIdFactory = () => string;
 
@@ -22,6 +24,10 @@ function findCustomWatchlist(watchlists: readonly Watchlist[], watchlistId: stri
   }
 
   return watchlist;
+}
+
+function uniqueProductionIds(productionIds: readonly WatchlistProductionId[]): WatchlistProductionId[] {
+  return [...new Set(productionIds)];
 }
 
 function createUniqueId(
@@ -49,8 +55,45 @@ function createCustomWatchlistRecord(
     name: input.name,
     description: input.description,
     kind: "custom",
-    productions: [...(input.productions || [])],
+    productions: uniqueProductionIds(input.productions || []),
   };
+}
+
+function updateCustomWatchlist(
+  watchlists: readonly Watchlist[],
+  watchlistId: string,
+  update: (watchlist: Watchlist) => Watchlist,
+): Watchlist[] {
+  const customWatchlist = findCustomWatchlist(watchlists, watchlistId);
+  const updatedWatchlist = update(customWatchlist);
+
+  return watchlists.map(watchlist => (
+    watchlist.id === watchlistId ? updatedWatchlist : watchlist
+  ));
+}
+
+function assertReorderedProductions(
+  currentProductionIds: readonly WatchlistProductionId[],
+  reorderedProductionIds: readonly WatchlistProductionId[],
+): void {
+  const uniqueReorderedProductionIds = uniqueProductionIds(reorderedProductionIds);
+  const hasDuplicates = uniqueReorderedProductionIds.length !== reorderedProductionIds.length;
+  const hasSameLength = reorderedProductionIds.length === currentProductionIds.length;
+  const hasSameProductions = reorderedProductionIds.every(productionId => (
+    currentProductionIds.includes(productionId)
+  ));
+
+  if (hasDuplicates || !hasSameLength || !hasSameProductions) {
+    throw new Error("A reordenação deve conter exatamente as produções da watchlist, sem duplicações.");
+  }
+}
+
+function normalizeSearchText(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("pt-BR")
+    .trim();
 }
 
 export function createCustomWatchlist(
@@ -66,11 +109,7 @@ export function renameCustomWatchlist(
   watchlistId: string,
   name: string,
 ): Watchlist[] {
-  findCustomWatchlist(watchlists, watchlistId);
-
-  return watchlists.map(watchlist => (
-    watchlist.id === watchlistId ? { ...watchlist, name } : watchlist
-  ));
+  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({ ...watchlist, name }));
 }
 
 export function duplicateCustomWatchlist(
@@ -94,4 +133,56 @@ export function deleteCustomWatchlist(
   findCustomWatchlist(watchlists, watchlistId);
 
   return watchlists.filter(watchlist => watchlist.id !== watchlistId);
+}
+
+export function addProductionsToCustomWatchlist(
+  watchlists: readonly Watchlist[],
+  watchlistId: string,
+  productionIds: readonly WatchlistProductionId[],
+): Watchlist[] {
+  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({
+    ...watchlist,
+    productions: uniqueProductionIds([...watchlist.productions, ...productionIds]),
+  }));
+}
+
+export function removeProductionsFromCustomWatchlist(
+  watchlists: readonly Watchlist[],
+  watchlistId: string,
+  productionIds: readonly WatchlistProductionId[],
+): Watchlist[] {
+  const productionIdsToRemove = new Set(productionIds);
+
+  return updateCustomWatchlist(watchlists, watchlistId, watchlist => ({
+    ...watchlist,
+    productions: watchlist.productions.filter(productionId => !productionIdsToRemove.has(productionId)),
+  }));
+}
+
+export function reorderCustomWatchlistProductions(
+  watchlists: readonly Watchlist[],
+  watchlistId: string,
+  productionIds: readonly WatchlistProductionId[],
+): Watchlist[] {
+  return updateCustomWatchlist(watchlists, watchlistId, watchlist => {
+    assertReorderedProductions(watchlist.productions, productionIds);
+
+    return {
+      ...watchlist,
+      productions: [...productionIds],
+    };
+  });
+}
+
+export function searchWatchlistProductions(
+  watchlist: Watchlist,
+  productionCatalog: readonly Movie[],
+  query: string,
+): Movie[] {
+  const normalizedQuery = normalizeSearchText(query);
+  const productionApi = createProductionRetrievalApi(watchlist, productionCatalog);
+
+  return productionApi.getProductions().filter(production => (
+    normalizeSearchText(production.t).includes(normalizedQuery)
+  ));
 }
