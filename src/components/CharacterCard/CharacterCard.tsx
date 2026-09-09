@@ -1,30 +1,21 @@
 import { Link } from "react-router-dom";
-import type { Character } from "../../types";
-import { currentCharacterStatus, hasEncounteredCharacter, unlockedAppearances } from "../../utils/characters";
-import type { ProgressiveKnowledgeEngine } from "../../utils/progressiveKnowledge";
-import { productions } from "../../data/movies";
+import type { CharacterCardViewModel } from "../../viewModels/characters";
 import { CharacterPortrait } from "../CharacterPortrait/CharacterPortrait";
 
 interface CharacterCardProps {
-  character: Character;
-  knowledge: ProgressiveKnowledgeEngine;
+  model: CharacterCardViewModel;
 }
 
-export function CharacterCard({ character, knowledge }: CharacterCardProps) {
-  const unlocked = hasEncounteredCharacter(character, knowledge);
-  const firstSeen = productions.find(movie => movie.n === character.firstAppearance);
-  const appearances = unlockedAppearances(character, knowledge);
-  const appearancesLabel = `${appearances.length} ${appearances.length === 1 ? "aparição conhecida" : "aparições conhecidas"}`;
-
-  return unlocked ? (
-    <Link className="db-card character-card" to={`/character/${character.id}`}>
-      <CharacterPortrait character={character} knowledge={knowledge} />
+export function CharacterCard({ model }: CharacterCardProps) {
+  return model.isUnlocked ? (
+    <Link className="db-card character-card" to={`/character/${model.id}`}>
+      <CharacterPortrait image={model.portrait} alt={model.name} />
       <div className="character-card-body">
-        <h4>{character.name}</h4>
+        <h4>{model.name}</h4>
         <dl className="character-meta">
-          <div><dt>Status conhecido</dt><dd>{currentCharacterStatus(character, knowledge)}</dd></div>
-          <div><dt>Primeira aparição</dt><dd>{firstSeen?.t || "CLASSIFIED"}</dd></div>
-          <div><dt>Aparições vistas</dt><dd>{appearancesLabel}</dd></div>
+          <div><dt>Status conhecido</dt><dd>{model.status}</dd></div>
+          <div><dt>Primeira aparição</dt><dd>{model.firstAppearanceTitle}</dd></div>
+          <div><dt>Aparições vistas</dt><dd>{model.appearancesLabel}</dd></div>
         </dl>
       </div>
     </Link>

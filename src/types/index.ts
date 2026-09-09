@@ -75,11 +75,15 @@ export interface ProgressState {
   notes: Record<number, string>;
 }
 
+export type AchievementRule =
+  | { type: "productions"; productionIds: number[] }
+  | { type: "catalog"; priority?: Priority; releasedOnly?: boolean };
+
 export interface Achievement {
   icon: string;
   name: string;
   desc: string;
-  test: (knowledge: import("../utils/progressiveKnowledge").ProgressiveKnowledgeEngine) => boolean;
+  rule: AchievementRule;
 }
 
 export type TabId =

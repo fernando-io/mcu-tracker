@@ -1,6 +1,6 @@
 import type { Character, CharacterRelationship } from "../types";
 import { characterRelationships } from "../data/characterRelationships";
-import type { ProgressiveKnowledgeEngine } from "./progressiveKnowledge";
+import type { ProgressiveKnowledgeEngine } from "../engines/progressiveKnowledge";
 
 export function knownCharacterRelationships(character: Character, knowledge: ProgressiveKnowledgeEngine): CharacterRelationship[] {
   const latestByTarget = new Map<string, CharacterRelationship>();
