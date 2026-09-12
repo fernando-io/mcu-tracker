@@ -9,12 +9,13 @@ interface MovieGridProps {
   watched: Set<number>;
   ratings: Record<number, number>;
   notes: Record<number, string>;
+  highlightedMovieNumber: number | null;
   onToggleWatched: (movieNumber: number, watched: boolean) => void;
   onRate: (movieNumber: number, score: number) => void;
   onNoteChange: (movieNumber: number, note: string) => void;
 }
 
-export function MovieGrid({ sectionName, movies, allMovies, watched, ratings, notes, onToggleWatched, onRate, onNoteChange }: MovieGridProps) {
+export function MovieGrid({ sectionName, movies, allMovies, watched, ratings, notes, highlightedMovieNumber, onToggleWatched, onRate, onNoteChange }: MovieGridProps) {
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
   const released = allMovies.filter(movie => movie.s === sectionName && movie.p !== "future");
   const seen = released.filter(movie => watched.has(movie.n)).length;
@@ -42,14 +43,15 @@ export function MovieGrid({ sectionName, movies, allMovies, watched, ratings, no
         </div>
       </div>
       <div className="grid">
-        {movies.map(movie => (
+        {movies.map((movie, index) => (
           <MovieCard
             key={movie.n}
             movie={movie}
             watched={watched.has(movie.n)}
             isNext={movie.n === nextMovieNumber}
             isSectionExpanded={isSectionExpanded}
-            showLockedNext={isSectionExpanded && movie.n === nextMovieNumber}
+            showLockedNext={isSectionExpanded && movie.n === nextMovieNumber && index % 2 === 1}
+            isRecentlyCompleted={movie.n === highlightedMovieNumber}
             rating={ratings[movie.n] || 0}
             note={notes[movie.n] || ""}
             onToggleSection={toggleSection}

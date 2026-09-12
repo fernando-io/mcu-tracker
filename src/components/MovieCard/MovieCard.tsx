@@ -8,6 +8,7 @@ interface MovieCardProps {
   isNext: boolean;
   isSectionExpanded: boolean;
   showLockedNext: boolean;
+  isRecentlyCompleted: boolean;
   rating: number;
   note: string;
   onToggleSection: () => void;
@@ -16,12 +17,12 @@ interface MovieCardProps {
   onNoteChange: (movieNumber: number, note: string) => void;
 }
 
-export function MovieCard({ movie, watched, isNext, isSectionExpanded, showLockedNext, rating, note, onToggleSection, onToggleWatched, onRate, onNoteChange }: MovieCardProps) {
+export function MovieCard({ movie, watched, isNext, isSectionExpanded, showLockedNext, isRecentlyCompleted, rating, note, onToggleSection, onToggleWatched, onRate, onNoteChange }: MovieCardProps) {
   const [lab, cls] = label(movie.p);
   const isFuture = movie.p === "future";
 
   return (
-    <article className={`item${watched ? " watched" : ""}${isNext ? " next" : ""}${isFuture ? " future-item" : ""}`}>
+    <article className={`item${watched ? " watched" : ""}${isNext ? " next" : ""}${isFuture ? " future-item" : ""}${isRecentlyCompleted ? " recently-completed" : ""}`}>
       <div className="num">{String(movie.n).padStart(2, "0")}</div>
       <div>
         <div className="card-tags">

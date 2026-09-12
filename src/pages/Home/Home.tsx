@@ -7,15 +7,12 @@ import { useJourneyDashboard } from "../../hooks/useJourneyDashboard";
 
 export function Home() {
 const dashboard = useJourneyDashboard();
-  const characterTotal = dashboard.characters.known + dashboard.characters.hidden;
-  const knownCharactersPercentage = characterTotal
-    ? Math.round((dashboard.characters.known / characterTotal) * 100)
-    : 0;
-  const hiddenCharactersPercentage = characterTotal
-    ? Math.round((dashboard.characters.hidden / characterTotal) * 100)
-    : 0;
-
-  return (
+  const indexedDatabaseRecords = dashboard.database.knownCharacters
+    + dashboard.database.knownRelationships
+    + dashboard.database.knownOrganizationsAndConcepts;
+  const getDatabaseDistribution = (count: number) => indexedDatabaseRecords
+    ? Math.round((count / indexedDatabaseRecords) * 100)
+    : 0;return (
     <main className="wrap page-content dashboard-page">
       <section className="dashboard-hero" aria-labelledby="dashboard-title">
         <div className="dashboard-hero-copy">
@@ -97,29 +94,29 @@ const dashboard = useJourneyDashboard();
             <h2 id="database-progress-title">Progresso da Database</h2>
             <p>Conhecimento desbloqueado a cada produção assistida.</p>
           </div>
-          <div className="database-total"><div><strong>{dashboard.database.percentage}%</strong><span>desbloqueada</span></div><Database aria-hidden="true" size={36} strokeWidth={1.7} /></div>
+          <div className="database-total"><div><strong>{indexedDatabaseRecords}</strong><span>registros indexados</span></div><Database aria-hidden="true" size={36} strokeWidth={1.7} /></div>
         </div>
         <div className="dashboard-grid dashboard-metrics">
           <article className="database-metric">
             <div className="database-metric-info">
               <Users className="metric-glyph" aria-hidden="true" size={24} strokeWidth={1.8} />
-              <div className="database-metric-copy"><strong>Personagens</strong><b>{dashboard.database.knownCharacters} <span>de {dashboard.database.totalCharacters}</span></b></div>
+              <div className="database-metric-copy"><strong>Personagens</strong><b>{dashboard.database.knownCharacters}</b><span>personagens identificados</span></div>
             </div>
-            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${dashboard.database.charactersPercentage}%` }} /></i><small>{dashboard.database.charactersPercentage}%</small></div>
+            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${getDatabaseDistribution(dashboard.database.knownCharacters)}%` }} /></i></div>
           </article>
           <article className="database-metric">
             <div className="database-metric-info">
               <Share2 className="metric-glyph" aria-hidden="true" size={24} strokeWidth={1.8} />
-              <div className="database-metric-copy"><strong>Relações</strong><b>{dashboard.database.knownRelationships} <span>de {dashboard.database.totalRelationships}</span></b></div>
+              <div className="database-metric-copy"><strong>Relações</strong><b>{dashboard.database.knownRelationships}</b><span>relações registradas</span></div>
             </div>
-            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${dashboard.database.relationshipsPercentage}%` }} /></i><small>{dashboard.database.relationshipsPercentage}%</small></div>
+            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${getDatabaseDistribution(dashboard.database.knownRelationships)}%` }} /></i></div>
           </article>
           <article className="database-metric">
             <div className="database-metric-info">
               <Landmark className="metric-glyph" aria-hidden="true" size={24} strokeWidth={1.8} />
-              <div className="database-metric-copy"><strong>Organizações e conceitos</strong><b>{dashboard.database.knownOrganizationsAndConcepts} <span>de {dashboard.database.totalOrganizationsAndConcepts}</span></b></div>
+              <div className="database-metric-copy"><strong>Organizações e conceitos</strong><b>{dashboard.database.knownOrganizationsAndConcepts}</b><span>registros indexados</span></div>
             </div>
-            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${dashboard.database.organizationsAndConceptsPercentage}%` }} /></i><small>{dashboard.database.organizationsAndConceptsPercentage}%</small></div>
+            <div className="metric-track"><i aria-hidden="true"><span style={{ width: `${getDatabaseDistribution(dashboard.database.knownOrganizationsAndConcepts)}%` }} /></i></div>
           </article>
         </div>
       </section>
@@ -134,17 +131,15 @@ const dashboard = useJourneyDashboard();
             </div>
           </div>
           <div className="character-progress-values">
-            <div className="character-stat">
+            <div className="character-stat character-stat-archive">
               <User className="character-stat-icon" aria-hidden="true" size={22} strokeWidth={2} />
               <b>{dashboard.characters.known}</b>
-              <span>Conhecidos</span>
-              <div className="character-stat-progress"><i aria-hidden="true"><span style={{ width: `${knownCharactersPercentage}%` }} /></i><small>{knownCharactersPercentage}%</small></div>
+              <span>Personagens identificados</span>
             </div>
-            <div className="character-stat">
+            <div className="character-stat character-stat-archive character-stat-classified">
               <EyeOff className="character-stat-icon" aria-hidden="true" size={22} strokeWidth={2} />
-              <b>{dashboard.characters.hidden}</b>
-              <span>Ocultos</span>
-              <div className="character-stat-progress"><i aria-hidden="true"><span style={{ width: `${hiddenCharactersPercentage}%` }} /></i><small>{hiddenCharactersPercentage}%</small></div>
+              <b>CLASSIFIED</b>
+              <span>Novos perfis surgem conforme a jornada avança.</span>
             </div>
           </div>
           <Link className="character-cta" to="/characters"><span>Explorar personagens</span><b aria-hidden="true">→</b></Link>

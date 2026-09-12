@@ -1,24 +1,71 @@
 import { FileDown, RotateCcw, Search, SearchX, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Hero } from "../../components/Hero/Hero";
 import { MovieGrid } from "../../components/MovieGrid/MovieGrid";
 import { WatchlistManager } from "../../components/WatchlistManager/WatchlistManager";
+import { UnlockOverlay } from "../../components/UnlockOverlay/UnlockOverlay";
 import { useHomeViewModel } from "../../hooks/useHomeViewModel";
 import { EMPTY_PROGRESS_STATE } from "../../state/watchlistProgressPersistence";
 import type { FilterId } from "../../types";
+import { collectUnlockGroups, type UnlockGroup } from "../../viewModels/unlocks";
 
 export function TimelinePage() {
   const [filter, setFilter] = useState<FilterId>("all");
   const [query, setQuery] = useState("");
+  const [toast, setToast] = useState<string | null>(null);
+  const [unlockGroups, setUnlockGroups] = useState<UnlockGroup[] | null>(null);
+  const [unlockOriginMovie, setUnlockOriginMovie] = useState<number | null>(null);
+  const [recentlyCompletedMovie, setRecentlyCompletedMovie] = useState<number | null>(null);
+  const toastTimeout = useRef<number | undefined>(undefined);
+  const overlayTimeout = useRef<number | undefined>(undefined);
+  const highlightTimeout = useRef<number | undefined>(undefined);
   const timeline = useHomeViewModel({ filter, query });
 
+  useEffect(() => () => {
+    window.clearTimeout(toastTimeout.current);
+    window.clearTimeout(overlayTimeout.current);
+    window.clearTimeout(highlightTimeout.current);
+  }, []);
+
+  function showToast(message: string) {
+    window.clearTimeout(toastTimeout.current);
+    setToast(message);
+    toastTimeout.current = window.setTimeout(() => setToast(null), 2400);
+  }
+
   function updateWatched(movieNumber: number, isWatched: boolean) {
+    const isNewCompletion = isWatched && !timeline.watched.has(movieNumber);
+    if (isNewCompletion) {
+      const nextWatched = new Set(timeline.watched);
+      nextWatched.add(movieNumber);
+      const groups = collectUnlockGroups(timeline.watched, nextWatched);
+
+      showToast("Produção registrada.");
+      if (groups.length) {
+        window.clearTimeout(overlayTimeout.current);
+    window.clearTimeout(highlightTimeout.current);
+        overlayTimeout.current = window.setTimeout(() => {
+          setUnlockOriginMovie(movieNumber);
+          setUnlockGroups(groups);
+        }, 280);
+      }
+    }
     timeline.updateActiveProgress(progressState => {
       const watched = new Set(progressState.watched);
       if (isWatched) watched.add(movieNumber);
       else watched.delete(movieNumber);
       return { ...progressState, watched: [...watched] };
     });
+  }
+
+  function closeUnlockOverlay() {
+    setUnlockGroups(null);
+    if (unlockOriginMovie === null) return;
+
+    window.clearTimeout(highlightTimeout.current);
+    setRecentlyCompletedMovie(unlockOriginMovie);
+    setUnlockOriginMovie(null);
+    highlightTimeout.current = window.setTimeout(() => setRecentlyCompletedMovie(null), 1800);
   }
 
   function updateRating(movieNumber: number, score: number) {
@@ -103,7 +150,9 @@ export function TimelinePage() {
           watched={timeline.watched}
           ratings={timeline.progressState.ratings}
           notes={timeline.progressState.notes}
-          onToggleWatched={updateWatched}
+
+          highlightedMovieNumber={recentlyCompletedMovie}
+                    onToggleWatched={updateWatched}
           onRate={updateRating}
           onNoteChange={updateNote}
         />
@@ -116,7 +165,8 @@ export function TimelinePage() {
         </section>
       )}
       <div className="credit">Projeto pessoal de maratona. Regra estrutural: apenas conteúdos vinculados a produções efetivamente assistidas são renderizados.</div>
+      {toast ? <div className="timeline-toast" role="status">{toast}</div> : null}
+      {unlockGroups ? <UnlockOverlay groups={unlockGroups} onClose={closeUnlockOverlay} /> : null}
     </main>
   );
 }
-
