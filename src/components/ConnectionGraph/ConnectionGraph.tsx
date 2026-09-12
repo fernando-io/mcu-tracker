@@ -26,7 +26,21 @@ export function ConnectionGraph({ connections }: ConnectionGraphProps) {
       </div>
       <svg className="network" viewBox="0 0 1000 520" role="img" aria-label="Mapa de conexões do MCU">
         {!names.length ? (
-          <text x="500" y="260" textAnchor="middle" fill="#777" fontSize="18">Assista ao primeiro título para desbloquear a rede.</text>
+          <>
+            <g className="network-empty-radar" aria-hidden="true">
+              <path d="M80 130H920M80 260H920M80 390H920M250 70V450M500 70V450M750 70V450" />
+              <circle cx="500" cy="260" r="178" />
+              <circle cx="500" cy="260" r="116" />
+              <circle cx="500" cy="260" r="54" />
+              <path d="M500 82V438M322 260H678" />
+              <circle cx="500" cy="260" r="5" />
+            </g>
+            <g className="network-empty-copy">
+              <text x="500" y="238" textAnchor="middle">NENHUMA CONEXÃO REGISTRADA</text>
+              <text x="500" y="270" textAnchor="middle">As relações entre personagens, organizações e artefatos</text>
+              <text x="500" y="290" textAnchor="middle">serão reveladas conforme sua jornada.</text>
+            </g>
+          </>
         ) : (
           <>
             {connections.map(([a, b, at, relation], index) => (
