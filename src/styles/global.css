@@ -3523,3 +3523,732 @@ h1{font-size:clamp(34px,5vw,58px);line-height:.98;letter-spacing:-.05em;margin:1
     box-shadow: 0 12px 26px rgba(0, 0, 0, .26);
   }
 }
+
+/* Enhanced Timeline: S.H.I.E.L.D. journey surface. */
+.timeline-page {
+  padding-bottom: 54px;
+}
+
+.timeline-page .hero {
+  position: relative;
+  overflow: hidden;
+  margin: 0 calc((min(1200px, calc(100vw - 28px)) - 100vw) / 2) 0;
+  padding: 0;
+  border-bottom: 1px solid rgba(230, 36, 41, .27);
+  background:
+    radial-gradient(ellipse at 72% 38%, rgba(230, 36, 41, .18), transparent 29%),
+    linear-gradient(112deg, #050c14 0%, #0b0d13 52%, #180b0f 100%);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, .28);
+}
+
+.timeline-page .hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(3, 8, 14, .62), transparent 58%),
+    repeating-linear-gradient(90deg, transparent 0, transparent 68px, rgba(255, 255, 255, .018) 69px),
+    linear-gradient(0deg, rgba(0, 0, 0, .42), transparent 58%);
+}
+
+.timeline-page .hero-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, .9fr);
+  gap: 26px;
+  width: min(1200px, calc(100vw - 28px));
+  min-height: 278px;
+  margin: 0 auto;
+  padding: 31px 0 43px;
+}
+
+.timeline-page .hero-card,
+.timeline-page .stats-card {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.timeline-page .hero-card {
+  align-self: center;
+  padding: 8px 0;
+}
+
+.timeline-page .hero-card::after {
+  right: auto;
+  left: -130px;
+  top: -155px;
+  width: 350px;
+  height: 350px;
+  opacity: .52;
+}
+
+.timeline-page .hero-card h1 {
+  max-width: 610px;
+  margin: 10px 0 13px;
+  letter-spacing: 0;
+}
+
+.timeline-page .hero-card p {
+  max-width: 590px;
+  color: #d2d5da;
+}
+
+.timeline-page .stats-card {
+  align-self: stretch;
+  padding: 19px 20px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-top-color: rgba(213, 169, 75, .28);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(20, 18, 22, .9), rgba(10, 12, 16, .9));
+  box-shadow: 0 18px 38px rgba(0, 0, 0, .25), inset 0 1px rgba(255, 255, 255, .035);
+}
+
+.timeline-page .stats-mini {
+  gap: 7px;
+}
+
+.timeline-page .mini {
+  border-color: rgba(255, 255, 255, .08);
+  background: rgba(0, 0, 0, .18);
+}
+
+.timeline-control-panel {
+  position: relative;
+  z-index: 2;
+  margin: -25px 0 28px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .11);
+  border-top-color: rgba(213, 169, 75, .25);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 92% 0%, rgba(230, 36, 41, .09), transparent 32%),
+    linear-gradient(145deg, #11151b, #0d0f13);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .27), inset 0 1px rgba(255, 255, 255, .026);
+}
+
+.timeline-control-panel .watchlist-manager {
+  margin: 0;
+  padding: 17px 19px 14px;
+  border: 0;
+  border-left: 2px solid rgba(230, 36, 41, .5);
+  border-radius: 0;
+  background: transparent;
+}
+
+.timeline-control-panel .watchlist-manager::after {
+  display: none;
+}
+
+.timeline-control-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, .45fr) auto;
+  gap: 15px;
+  align-items: end;
+  padding: 14px 19px 16px;
+  border-top: 1px solid rgba(255, 255, 255, .075);
+  background: rgba(0, 0, 0, .12);
+}
+
+.timeline-control-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #a7adb7;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.timeline-control-label svg {
+  color: #e9bd55;
+}
+
+.timeline-control-tools .toolbar {
+  gap: 6px;
+  padding: 8px 0 0;
+}
+
+.timeline-control-tools .filter {
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #bfc2c8;
+  font-size: 11px;
+}
+
+.timeline-control-tools .filter.active {
+  border-color: #eee;
+  background: #eee;
+}
+
+.timeline-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 8px;
+  background: #0b0d11;
+  color: #8c939d;
+}
+
+.timeline-search .search {
+  min-width: 0;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 12px;
+}
+
+.timeline-command-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.timeline-command-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.timeline-page .section {
+  position: relative;
+  margin: 0 0 34px;
+  padding-top: 22px;
+}
+
+.timeline-page .section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 78px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red), rgba(230, 36, 41, .12));
+}
+
+.timeline-page .section-head {
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.timeline-page .section-title h2 {
+  font-size: 24px;
+  letter-spacing: 0;
+}
+
+.timeline-page .section-title p {
+  margin-top: 5px;
+  color: #979ca5;
+}
+
+.timeline-section-status {
+  display: grid;
+  justify-items: end;
+  gap: 7px;
+}
+
+.timeline-page .count {
+  color: #d1d4d9;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.section-progress {
+  width: 136px;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #272c34;
+}
+
+.section-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e52229, #ff6368);
+  box-shadow: 0 0 8px rgba(255, 82, 88, .34);
+}
+
+.timeline-page .grid {
+  gap: 12px;
+}
+
+.timeline-page .item {
+  position: relative;
+  overflow: hidden;
+  min-height: 92px;
+  border-color: rgba(255, 255, 255, .1);
+  border-radius: 10px;
+  background: linear-gradient(145deg, #15191f, #0f1115);
+  box-shadow: 0 9px 20px rgba(0, 0, 0, .16);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.timeline-page .item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, .22);
+  box-shadow: 0 15px 28px rgba(0, 0, 0, .24);
+}
+
+.timeline-page .item.watched {
+  border-color: rgba(80, 202, 130, .32);
+  background: linear-gradient(145deg, rgba(40, 124, 79, .16), #101613 72%);
+}
+
+.timeline-page .item.watched .num {
+  color: #a8efbc;
+  border-color: rgba(80, 202, 130, .26);
+  background: rgba(80, 202, 130, .1);
+}
+
+.timeline-page .item.next {
+  border-color: rgba(230, 36, 41, .62);
+  background: linear-gradient(118deg, rgba(107, 17, 24, .54), #181216 48%, #111319);
+  box-shadow: 0 14px 30px rgba(230, 36, 41, .14), inset 0 1px rgba(255, 255, 255, .05);
+}
+
+.timeline-page .item.next::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 96px;
+  height: 2px;
+  background: linear-gradient(90deg, #ff444b, transparent);
+}
+
+.timeline-page .item.future-item {
+  border-color: rgba(111, 149, 196, .19);
+  background: linear-gradient(145deg, rgba(46, 69, 94, .24), #0e1117);
+}
+
+.timeline-page .item.future-item .title-line h3,
+.timeline-page .item.future-item .type {
+  color: #929ca9;
+}
+
+.timeline-page .item.future-item .num {
+  color: #7694b5;
+  border-color: rgba(111, 149, 196, .26);
+  background: rgba(111, 149, 196, .08);
+}
+
+.journey-card-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.journey-card-state.next { color: #ff777d; }
+.journey-card-state.watched { color: #83dc9f; }
+.journey-card-state.classified { color: #88b9ed; }
+
+.timeline-page .future-note {
+  color: #94b8df;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.timeline-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 22px 0 44px;
+  padding: 42px 20px;
+  border: 1px dashed rgba(255, 255, 255, .16);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .025), rgba(230, 36, 41, .035));
+  color: #9ba0a9;
+  text-align: center;
+}
+
+.timeline-empty svg { color: #e55b61; }
+.timeline-empty h2 { margin: 3px 0 0; color: #ededee; font-size: 17px; }
+.timeline-empty p { max-width: 360px; margin: 0 0 8px; font-size: 12px; line-height: 1.5; }
+
+@media (max-width: 900px) {
+  .timeline-page .hero-grid,
+  .timeline-control-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-page .hero-grid {
+    gap: 16px;
+  }
+
+  .timeline-page .stats-card {
+    min-height: 0;
+  }
+
+  .timeline-search {
+    min-height: 38px;
+  }
+
+  .timeline-command-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 560px) {
+  .timeline-page .hero-grid {
+    width: min(100% - 28px, 1200px);
+    padding: 26px 0 34px;
+  }
+
+  .timeline-control-panel {
+    margin-top: -16px;
+  }
+
+  .timeline-control-panel .watchlist-manager,
+  .timeline-control-tools {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .timeline-page .section-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .timeline-section-status {
+    justify-items: start;
+  }
+
+  .timeline-page .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .timeline-command-actions {
+    justify-content: stretch;
+  }
+
+  .timeline-command-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Enhanced Timeline: final cinematic polish. */
+.timeline-page .hero {
+  min-height: 306px;
+  background: #05080c;
+}
+
+.timeline-hero-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 30%;
+  opacity: .56;
+  filter: saturate(.74) contrast(1.08) brightness(.68);
+}
+
+.timeline-page .hero::before {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(2, 7, 13, .96) 0%, rgba(2, 7, 13, .82) 32%, rgba(2, 7, 13, .45) 56%, rgba(3, 5, 9, .3) 100%),
+    linear-gradient(0deg, rgba(0, 0, 0, .55), transparent 48%, rgba(0, 0, 0, .15)),
+    radial-gradient(ellipse at 58% 46%, transparent 15%, rgba(0, 0, 0, .26) 100%);
+}
+
+.timeline-page .hero::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 82px rgba(0, 0, 0, .55), inset 0 -38px 42px rgba(0, 0, 0, .32);
+}
+
+.timeline-page .hero-grid {
+  z-index: 3;
+  min-height: 306px;
+  padding: 35px 0 47px;
+}
+
+.timeline-page .hero-card {
+  padding-right: 26px;
+}
+
+.timeline-page .hero-card p {
+  max-width: 560px;
+  color: #d7dade;
+}
+
+.timeline-page .stats-card {
+  background: linear-gradient(145deg, rgba(20, 18, 22, .91), rgba(8, 11, 15, .9));
+  backdrop-filter: blur(5px);
+}
+
+.timeline-page .section {
+  margin-bottom: 38px;
+  padding-top: 24px;
+}
+
+.timeline-page .section-head {
+  position: relative;
+  align-items: end;
+  min-height: 58px;
+  margin-bottom: 15px;
+  padding: 0 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, .075);
+}
+
+.timeline-page .section-head::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 112px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(230, 36, 41, .95), transparent);
+}
+
+.timeline-page .section-title h2 {
+  color: #f1f2f4;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, .34);
+}
+
+.timeline-section-status {
+  min-width: 150px;
+}
+
+.section-progress {
+  width: 150px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .36);
+}
+
+.timeline-page .item {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.timeline-page .item .num,
+.timeline-page .item .badge,
+.timeline-page .item .check {
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.timeline-page .item:hover .num {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, .28);
+}
+
+.timeline-page .item:hover .badge,
+.timeline-page .item:hover .journey-card-state {
+  transform: translateY(-1px);
+}
+
+.timeline-page .item.next {
+  border-color: rgba(245, 61, 69, .78);
+  background: linear-gradient(118deg, rgba(116, 18, 27, .64), #191217 49%, #11141a);
+  box-shadow: 0 16px 34px rgba(230, 36, 41, .18), inset 0 1px rgba(255, 255, 255, .07);
+}
+
+.timeline-page .item.next .num {
+  color: #fff;
+  border-color: rgba(255, 93, 99, .76);
+  background: linear-gradient(145deg, #a51820, #e5262d);
+  box-shadow: 0 0 0 4px rgba(230, 36, 41, .1), 0 0 18px rgba(230, 36, 41, .2);
+}
+
+.timeline-page .item.next .journey-card-state.next {
+  padding: 4px 7px;
+  border-color: rgba(255, 102, 109, .72);
+  background: rgba(230, 36, 41, .14);
+  color: #ff9ba0;
+}
+
+.timeline-page .item.watched .check:checked {
+  box-shadow: 0 0 0 3px rgba(80, 202, 130, .1);
+}
+
+.timeline-page .item.future-item {
+  opacity: .74;
+  filter: saturate(.72);
+}
+
+.timeline-page .item.future-item:hover {
+  opacity: .88;
+  border-color: rgba(111, 149, 196, .34);
+  box-shadow: 0 13px 24px rgba(0, 0, 0, .2);
+}
+
+.timeline-page .item.future-item .journey-card-state.classified {
+  border-color: rgba(136, 185, 237, .32);
+  background: rgba(86, 128, 178, .08);
+}
+
+.timeline-page .check {
+  transition: transform .16s ease, background .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.timeline-page .check:active:not(:disabled) {
+  transform: scale(.9);
+}
+
+@media (max-width: 900px) {
+  .timeline-hero-backdrop {
+    object-position: 60% 25%;
+  }
+}
+
+@media (max-width: 560px) {
+  .timeline-page .hero {
+    min-height: 0;
+  }
+
+  .timeline-page .hero-grid {
+    min-height: 0;
+    padding: 28px 0 38px;
+  }
+
+  .timeline-page .hero-card {
+    padding-right: 0;
+  }
+
+  .timeline-hero-backdrop {
+    object-position: 61% 22%;
+    opacity: .48;
+  }
+
+  .timeline-page .section-head {
+    align-items: flex-start;
+    min-height: 0;
+  }
+}
+/* Timeline cards: compact completed cards and centered locked states. */
+.timeline-page .grid {
+  align-items: start;
+}
+
+.timeline-page .summary-state {
+  grid-column: 1 / -1;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 104px;
+  padding: 12px 18px 14px;
+  color: inherit;
+  text-align: center;
+}
+
+.timeline-page .summary-state-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .045);
+  color: #aeb8c4;
+}
+
+.timeline-page .summary-state-locked .summary-state-icon {
+  border-color: rgba(255, 102, 109, .3);
+  background: rgba(230, 36, 41, .09);
+  color: #ff989d;
+}
+
+
+.timeline-page .summary-state-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.timeline-page .summary-state-copy strong {
+  color: #e9ecef;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.timeline-page .summary-state-copy span {
+  color: #929aa5;
+  font-size: 10px;
+  line-height: 1.42;
+}
+
+@media (max-width: 560px) {
+  .timeline-page .summary-state {
+    min-height: 96px;
+  }
+}
+/* On the two-column timeline, the locked record fills only the final card of a row. */
+@media (min-width: 901px) {
+  .timeline-page .grid > .item:nth-child(odd) .summary-state-locked {
+    display: none;
+  }
+}
+/* A locked record at the end of a row matches its expanded companion's height. */
+.timeline-page .item:has(.summary-state-locked) {
+  align-self: stretch;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.timeline-page .item:has(.summary-state-locked) .summary-state-locked {
+  align-self: stretch;
+  min-height: 0;
+}
+/* Timeline card headers keep titles, tags, and type on stable rows. */
+.timeline-page .title-line {
+  display: block;
+}
+
+.timeline-page .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.timeline-page .card-tags .badge,
+.timeline-page .card-tags .journey-card-state {
+  white-space: nowrap;
+}
+
+.timeline-page .card-tags + .type {
+  margin-top: 6px;
+}
+/* Timeline card header rhythm: tags align with the production number. */
+.timeline-page .card-tags {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+.timeline-page .card-tags + .title-line {
+  margin-top: 0;
+}
+/* Center the rating control against the reaction field. */
+.timeline-page .reaction {
+  align-items: center;
+}
+
+.timeline-page .rating {
+  align-items: center;
+}

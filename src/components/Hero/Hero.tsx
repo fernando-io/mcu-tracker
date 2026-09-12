@@ -1,3 +1,4 @@
+import ironmanBackdrop from "../../assets/ironman3.jpg";
 import { Stats } from "../Stats/Stats";
 
 interface HeroProps {
@@ -13,6 +14,7 @@ interface HeroProps {
 export function Hero(props: HeroProps) {
   return (
     <section className="hero">
+      <img className="timeline-hero-backdrop" src={ironmanBackdrop} alt="" />
       <div className="hero-grid">
         <div className="card hero-card">
           <div className="eyebrow">Spoiler-zero protocol</div>
